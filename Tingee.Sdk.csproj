@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Tingee.Sdk</AssemblyName>
+    <RootNamespace>Tingee.Sdk</RootNamespace>
+    <PackageId>Tingee.Sdk</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Tingee</Authors>
+    <Company>Tingee</Company>
+    <Description>Tingee Open API SDK for .NET (C#)</Description>
+    <PackageTags>tingee;sdk;payment;api;vietnam</PackageTags>
+    <PackageProjectUrl>https://developers.tingee.vn</PackageProjectUrl>
+    <PackageReleaseNotes>📧 developer@heno.vn | 💬 t.me/tingeesupport | 🌐 tingee.vn</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+</Project>
+
