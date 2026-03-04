@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591;CS1573;CS8632</NoWarn>
     <AssemblyName>Tingee.Sdk</AssemblyName>
     <RootNamespace>Tingee.Sdk</RootNamespace>
     <PackageId>Tingee.Sdk</PackageId>
