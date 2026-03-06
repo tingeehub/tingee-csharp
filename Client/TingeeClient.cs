@@ -34,8 +34,6 @@ public sealed partial class TingeeClient
     private readonly string _secretKey;
 
     public string BaseUrl { get; }
-    
-    public TingeeV1CustomMethods V1 { get; }
 
     public TingeeClient(TingeeClientOptions options)
     {
@@ -57,8 +55,6 @@ public sealed partial class TingeeClient
             options.SecretKey,
             options.ClientId,
             options.TimeoutMilliseconds);
-
-        V1 = new TingeeV1CustomMethods(_httpClient);
     }
 
     /// <summary>Verify an incoming Tingee webhook signature using the secretKey already set on this instance.</summary>
@@ -66,5 +62,15 @@ public sealed partial class TingeeClient
         string?                     signature,
         string?                     timestamp,
         Dictionary<string, object>? body)
+        => TingeeSigner.VerifyWebhookSignature(_secretKey, signature, timestamp, body);
+
+    /// <summary>
+    /// Verify an incoming Tingee webhook signature.
+    /// body can be passed as a raw JSON string — it will be parsed automatically.
+    /// </summary>
+    public WebhookVerifyResult VerifyWebhookSignature(
+        string?  signature,
+        string?  timestamp,
+        string?  body)
         => TingeeSigner.VerifyWebhookSignature(_secretKey, signature, timestamp, body);
 }

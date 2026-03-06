@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace Tingee.Sdk.Signature;
 
-/// <summary>Result of <see cref="TingeeSigner.VerifyWebhookSignature"/>.</summary>
+/// <summary>Result of <see cref="TingeeSigner.VerifyWebhookSignature(string, string?, string?, Dictionary{string, object}?)"/>.</summary>
 public sealed class WebhookVerifyResult
 {
     public string Code    { get; init; } = string.Empty;
@@ -64,6 +64,28 @@ public static class TingeeSigner
     ///     return Unauthorized(result);
     /// </code>
     /// </example>
+    public static WebhookVerifyResult VerifyWebhookSignature(
+        string                      secretToken,
+        string?                     signature,
+        string?                     timestamp,
+        string?                     body)
+    {
+        if (body is null)
+            return new() { Code = "MISSING_BODY", Message = "body is required and must be an object" };
+
+        Dictionary<string, object>? parsed;
+        try
+        {
+            parsed = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
+        }
+        catch
+        {
+            return new() { Code = "INVALID_BODY", Message = "body string is not valid JSON" };
+        }
+
+        return VerifyWebhookSignature(secretToken, signature, timestamp, parsed);
+    }
+
     public static WebhookVerifyResult VerifyWebhookSignature(
         string                      secretToken,
         string?                     signature,

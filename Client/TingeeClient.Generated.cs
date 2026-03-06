@@ -3,6 +3,9 @@
 
 #nullable enable
 
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using Tingee.Sdk.Http;
 using Tingee.Sdk.Types;
 using Tingee.Sdk.Types.Dtos;
@@ -11,16 +14,17 @@ namespace Tingee.Sdk.Client;
 
 public sealed partial class TingeeClient
 {
-    // 'public TingeeClient.V1Methods V1 { get; }' is declared in hand-written TingeeClient.cs
+    // Group: Bank
+    private BankGroup? _bank;
+    public BankGroup Bank => _bank ??= new BankGroup(_httpClient);
 
-    /// <summary>Base class for all V1 API methods. Extend via TingeeV1CustomMethods.</summary>
-    public class V1Methods
+    public sealed class BankGroup
     {
-        private protected readonly TingeeHttpClient _httpClient;
-        protected internal V1Methods(TingeeHttpClient httpClient) => _httpClient = httpClient;
+        private readonly TingeeHttpClient _httpClient;
+        internal BankGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
-        /// POST /v1/generate-viet-qr
+        /// POST /v1/bank/generate-viet-qr
         /// </summary>
         public async Task<TingeeApiResponse<GenerateVietQROuputDto?>> GenerateVietQrAsync(
             OpenApiGenerateVietQRInputDto body,
@@ -28,15 +32,14 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<GenerateVietQROuputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/generate-viet-qr",
+                path: "/v1/bank/generate-viet-qr",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/generate-dynamic-qr
+        /// POST /v1/bank/generate-dynamic-qr
         /// </summary>
         public async Task<TingeeApiResponse<GenerateDynamicQROuputDto?>> GenerateDynamicQrAsync(
             GenerateDynamicQRInputDto body,
@@ -44,15 +47,14 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<GenerateDynamicQROuputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/generate-dynamic-qr",
+                path: "/v1/bank/generate-dynamic-qr",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/delete-dynamic-qr
+        /// POST /v1/bank/delete-dynamic-qr
         /// </summary>
         public async Task<TingeeApiResponse<EmptyDto?>> DeleteDynamicQrAsync(
             OpenApiDeleteDynamicQRInputDto body,
@@ -60,15 +62,14 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<EmptyDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/delete-dynamic-qr",
+                path: "/v1/bank/delete-dynamic-qr",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/get-status-dynamic-qr
+        /// POST /v1/bank/get-status-dynamic-qr
         /// </summary>
         public async Task<TingeeApiResponse<OpenApiGetStatusDynamicQROutputDto?>> GetStatusDynamicQrAsync(
             OpenApiGetStatusDynamicQRInputDto body,
@@ -76,30 +77,28 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<OpenApiGetStatusDynamicQROutputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/get-status-dynamic-qr",
+                path: "/v1/bank/get-status-dynamic-qr",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// GET /v1/get-banks
+        /// GET /v1/bank/get-banks
         /// </summary>
-        public async Task<IList<Bank>> GetBanksAsync(
+        public async Task<TingeeApiResponse<Bank?>> GetBanksAsync(
             CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.RequestAsync<IList<Bank>>(
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<Bank?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Get,
-                path: "/v1/get-banks",
+                path: "/v1/bank/get-banks",
                 body: null,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/get-va-paging
+        /// POST /v1/bank/get-va-paging
         /// </summary>
         public async Task<TingeeApiResponse<PagedResultDto<OpenApiGetVAPagedOuputDto>?>> GetVaPagingAsync(
             OpenApiGetVAPagedInputDto body,
@@ -107,34 +106,32 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<PagedResultDto<OpenApiGetVAPagedOuputDto>?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/get-va-paging",
+                path: "/v1/bank/get-va-paging",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/get-account-number-info-by-qr-code
+        /// POST /v1/bank/get-account-number-info-by-qr-code
         /// </summary>
         public async Task<TingeeApiResponse<PagedResultDto<OpenApiGenerateVietQROuputDto>?>> GetAccountNumberInfoByQrCodeAsync(
-            string qrCode,
+            string qrcode,
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<PagedResultDto<OpenApiGenerateVietQROuputDto>?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/get-account-number-info-by-qr-code",
+                path: "/v1/bank/get-account-number-info-by-qr-code",
                 body: null,
                 query: new Dictionary<string, string?>
-            {
-                ["qrCode"] = qrCode.ToString()
-            },
+                    {
+                        ["qrCode"] = qrcode.ToString()
+                    },
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/create-va
+        /// POST /v1/bank/create-va
         /// </summary>
         public async Task<TingeeApiResponse<BankCreateVAOuputDto?>> CreateVaAsync(
             OpenApiCreateVAInpuDto body,
@@ -142,15 +139,14 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<BankCreateVAOuputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/create-va",
+                path: "/v1/bank/create-va",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/create-va-advanced
+        /// POST /v1/bank/create-va-advanced
         /// </summary>
         public async Task<TingeeApiResponse<BankCreateVAOuputDto?>> CreateVaAdvancedAsync(
             OpenApiCreateVAInpuDto body,
@@ -158,15 +154,14 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<BankCreateVAOuputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/create-va-advanced",
+                path: "/v1/bank/create-va-advanced",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/confirm-va
+        /// POST /v1/bank/confirm-va
         /// </summary>
         public async Task<TingeeApiResponse<OpenApiConfirmVAOuputDto?>> ConfirmVaAsync(
             OpenApiBankConfirmVAInputDto body,
@@ -174,40 +169,38 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<OpenApiConfirmVAOuputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/confirm-va",
+                path: "/v1/bank/confirm-va",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/delete-va
+        /// POST /v1/bank/delete-va
         /// </summary>
         public async Task<TingeeApiResponse<BankDeleteVAOutputDto?>> DeleteVaAsync(
-            string bankBin,
-            string bankName,
-            string vaAccountNumber,
-            double? merchantId,
+            string bankbin,
+            BankNameEnum? bankname,
+            string vaaccountnumber,
+            int? merchantid,
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<BankDeleteVAOutputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/delete-va",
+                path: "/v1/bank/delete-va",
                 body: null,
                 query: new Dictionary<string, string?>
-            {
-                ["bankBin"] = bankBin.ToString(),
-                ["bankName"] = bankName?.ToString(),
-                ["vaAccountNumber"] = vaAccountNumber.ToString(),
-                ["merchantId"] = merchantId?.ToString()
-            },
+                    {
+                        ["bankBin"] = bankbin?.ToString(),
+                        ["bankName"] = bankname?.ToString(),
+                        ["vaAccountNumber"] = vaaccountnumber.ToString(),
+                        ["merchantId"] = merchantid?.ToString()
+                    },
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/confirm-delete-va
+        /// POST /v1/bank/confirm-delete-va
         /// </summary>
         public async Task<TingeeApiResponse<EmptyDto?>> ConfirmDeleteVaAsync(
             OpenApiBankConfirmVAInputDto body,
@@ -215,15 +208,14 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<EmptyDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/confirm-delete-va",
+                path: "/v1/bank/confirm-delete-va",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/register-notify
+        /// POST /v1/bank/register-notify
         /// </summary>
         public async Task<TingeeApiResponse<BankDeleteVAOutputDto?>> RegisterNotifyAsync(
             OpenApiRegisterNotifyDto body,
@@ -231,15 +223,14 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<BankDeleteVAOutputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/register-notify",
+                path: "/v1/bank/register-notify",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/confirm-register-notify
+        /// POST /v1/bank/confirm-register-notify
         /// </summary>
         public async Task<TingeeApiResponse<BankDeleteVAOutputDto?>> ConfirmRegisterNotifyAsync(
             OpenApiBankConfirmVAInputDto body,
@@ -247,15 +238,14 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<BankDeleteVAOutputDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/confirm-register-notify",
+                path: "/v1/bank/confirm-register-notify",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
-        /// POST /v1/refund
+        /// POST /v1/bank/refund
         /// </summary>
         public async Task<TingeeApiResponse<EmptyDto?>> RefundAsync(
             OpenApiRefundDto body,
@@ -263,17 +253,27 @@ public sealed partial class TingeeClient
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<EmptyDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/refund",
+                path: "/v1/bank/refund",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+    }
+
+    // Group: Device
+    private DeviceGroup? _device;
+    public DeviceGroup Device => _device ??= new DeviceGroup(_httpClient);
+
+    public sealed class DeviceGroup
+    {
+        private readonly TingeeHttpClient _httpClient;
+        internal DeviceGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
         /// POST /v1/device/read-security-code
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> DeviceReadSecurityCodeAsync(
+        public async Task<TingeeApiResponse<EmptyDto?>> ReadSecurityCodeAsync(
             OpenApiReadSecurityCodeDto body,
             CancellationToken cancellationToken = default)
         {
@@ -285,11 +285,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/read-partner-security-code
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> DeviceReadPartnerSecurityCodeAsync(
+        public async Task<TingeeApiResponse<EmptyDto?>> ReadPartnerSecurityCodeAsync(
             OpenApiReadPartnerSecurityCodeDto body,
             CancellationToken cancellationToken = default)
         {
@@ -301,11 +300,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/add-device-to-shop
         /// </summary>
-        public async Task<TingeeApiResponse<IList<SendNotifyTingeeBoxDto>?>> DeviceAddDeviceToShopAsync(
+        public async Task<TingeeApiResponse<IList<SendNotifyTingeeBoxDto>?>> AddDeviceToShopAsync(
             OpenApiAddDeviceToShop body,
             CancellationToken cancellationToken = default)
         {
@@ -317,11 +315,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/update-shop-device-link-status
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> DeviceUpdateShopDeviceLinkStatusAsync(
+        public async Task<TingeeApiResponse<EmptyDto?>> UpdateShopDeviceLinkStatusAsync(
             OpenApiUpdateShopDeviceLinkDto body,
             CancellationToken cancellationToken = default)
         {
@@ -333,11 +330,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/read-amount
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> DeviceReadAmountAsync(
+        public async Task<TingeeApiResponse<EmptyDto?>> ReadAmountAsync(
             BIDVOpenApiReadAmountDto body,
             CancellationToken cancellationToken = default)
         {
@@ -349,11 +345,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/read-amount-link-to-merchant
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> DeviceReadAmountLinkToMerchantAsync(
+        public async Task<TingeeApiResponse<EmptyDto?>> ReadAmountLinkToMerchantAsync(
             OpenApiReadAmountDto body,
             CancellationToken cancellationToken = default)
         {
@@ -365,11 +360,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/show-qr-code
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> DeviceShowQrCodeAsync(
+        public async Task<TingeeApiResponse<EmptyDto?>> ShowQrCodeAsync(
             OpenApiShowQRCodeDto body,
             CancellationToken cancellationToken = default)
         {
@@ -381,11 +375,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/show-dynamic-qr-code
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> DeviceShowDynamicQrCodeAsync(
+        public async Task<TingeeApiResponse<EmptyDto?>> ShowDynamicQrCodeAsync(
             OpenApiShowQRCodeDto body,
             CancellationToken cancellationToken = default)
         {
@@ -397,11 +390,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/show-static-qr-code
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> DeviceShowStaticQrCodeAsync(
+        public async Task<TingeeApiResponse<EmptyDto?>> ShowStaticQrCodeAsync(
             OpenApiShowQRCodeDto body,
             CancellationToken cancellationToken = default)
         {
@@ -413,11 +405,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/get-devices-link-to-shop-or-va
         /// </summary>
-        public async Task<TingeeApiResponse<IList<SendNotifyTingeeBoxDto>?>> DeviceGetDevicesLinkToShopOrVaAsync(
+        public async Task<TingeeApiResponse<IList<SendNotifyTingeeBoxDto>?>> GetDevicesLinkToShopOrVaAsync(
             OpenApiGetDevicesLinkToShopOrVA body,
             CancellationToken cancellationToken = default)
         {
@@ -429,11 +420,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/device/get-paging
         /// </summary>
-        public async Task<TingeeApiResponse<PagedResultDto<DeviceDto>?>> DeviceGetPagingAsync(
+        public async Task<TingeeApiResponse<PagedResultDto<DeviceDto>?>> GetPagingAsync(
             OpenApiGetPagingDeviceInputDto body,
             CancellationToken cancellationToken = default)
         {
@@ -445,11 +435,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// DELETE /v1/device/reset
         /// </summary>
-        public async Task<TingeeApiResponse<string?>> DeviceResetAsync(
+        public async Task<TingeeApiResponse<string?>> ResetAsync(
             string uuid,
             CancellationToken cancellationToken = default)
         {
@@ -458,18 +447,43 @@ public sealed partial class TingeeClient
                 path: "/v1/device/reset",
                 body: null,
                 query: new Dictionary<string, string?>
-            {
-                ["uuid"] = uuid.ToString()
-            },
+                    {
+                        ["uuid"] = uuid.ToString()
+                    },
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+        /// <summary>
+        /// POST /v1/device/generate-and-show-dynamic-qr-code
+        /// </summary>
+        public async Task<TingeeApiResponse<object?>> GenerateAndShowDynamicQrCodeAsync(
+            OpenApiGenerateAndShowDynamicQrCodeDto body,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<object?>>(
+                method: Tingee.Sdk.Http.HttpMethod.Post,
+                path: "/v1/device/generate-and-show-dynamic-qr-code",
+                body: body,
+                query: null,
+                cancellationToken: cancellationToken);
+            return response.Data!;
+        }
+    }
+
+    // Group: User
+    private UserGroup? _user;
+    public UserGroup User => _user ??= new UserGroup(_httpClient);
+
+    public sealed class UserGroup
+    {
+        private readonly TingeeHttpClient _httpClient;
+        internal UserGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
         /// POST /v1/user/verify-referral-code
         /// </summary>
-        public async Task<TingeeApiResponse<OpenApiVerifyReferralCodeResponseDto?>> UserVerifyReferralCodeAsync(
-            string referralCode,
+        public async Task<TingeeApiResponse<OpenApiVerifyReferralCodeResponseDto?>> VerifyReferralCodeAsync(
+            string referralcode,
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<OpenApiVerifyReferralCodeResponseDto?>>(
@@ -477,17 +491,27 @@ public sealed partial class TingeeClient
                 path: "/v1/user/verify-referral-code",
                 body: null,
                 query: new Dictionary<string, string?>
-            {
-                ["referralCode"] = referralCode.ToString()
-            },
+                    {
+                        ["referralCode"] = referralcode.ToString()
+                    },
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+    }
+
+    // Group: Shop
+    private ShopGroup? _shop;
+    public ShopGroup Shop => _shop ??= new ShopGroup(_httpClient);
+
+    public sealed class ShopGroup
+    {
+        private readonly TingeeHttpClient _httpClient;
+        internal ShopGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
         /// POST /v1/shop/create-or-update
         /// </summary>
-        public async Task<TingeeApiResponse<OpenApiCreateOrUpdateShopOutputDto?>> ShopCreateOrUpdateAsync(
+        public async Task<TingeeApiResponse<OpenApiCreateOrUpdateShopOutputDto?>> CreateOrUpdateAsync(
             OpenApiCreateOrUpdateShopDto body,
             CancellationToken cancellationToken = default)
         {
@@ -499,11 +523,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/shop/get-paging
         /// </summary>
-        public async Task<TingeeApiResponse<PagedResultDto<OpenApiGetShopPagedOuputDto>?>> ShopGetPagingAsync(
+        public async Task<TingeeApiResponse<PagedResultDto<OpenApiGetShopPagedOuputDto>?>> GetPagingAsync(
             OpenApiGetShopPagedInputDto body,
             CancellationToken cancellationToken = default)
         {
@@ -515,11 +538,21 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+    }
+
+    // Group: DeepLink
+    private DeepLinkGroup? _deepLink;
+    public DeepLinkGroup DeepLink => _deepLink ??= new DeepLinkGroup(_httpClient);
+
+    public sealed class DeepLinkGroup
+    {
+        private readonly TingeeHttpClient _httpClient;
+        internal DeepLinkGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
         /// POST /v1/deep-link/generate
         /// </summary>
-        public async Task<TingeeApiResponse<string?>> DeepLinkGenerateAsync(
+        public async Task<TingeeApiResponse<string?>> GenerateAsync(
             OpenApiDeepLinkDto body,
             CancellationToken cancellationToken = default)
         {
@@ -531,11 +564,21 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+    }
+
+    // Group: AccountNumber
+    private AccountNumberGroup? _accountNumber;
+    public AccountNumberGroup AccountNumber => _accountNumber ??= new AccountNumberGroup(_httpClient);
+
+    public sealed class AccountNumberGroup
+    {
+        private readonly TingeeHttpClient _httpClient;
+        internal AccountNumberGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
         /// POST /v1/account-number/get-all-ddl
         /// </summary>
-        public async Task<TingeeApiResponse<IList<V2AccountNumberDDLDto>?>> AccountNumberGetAllDdlAsync(
+        public async Task<TingeeApiResponse<IList<V2AccountNumberDDLDto>?>> GetAllDdlAsync(
             OpenApiAccountNumberDDLPagedInputDto body,
             CancellationToken cancellationToken = default)
         {
@@ -547,11 +590,21 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+    }
+
+    // Group: Transaction
+    private TransactionGroup? _transaction;
+    public TransactionGroup Transaction => _transaction ??= new TransactionGroup(_httpClient);
+
+    public sealed class TransactionGroup
+    {
+        private readonly TingeeHttpClient _httpClient;
+        internal TransactionGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
         /// POST /v1/transaction/get-paging
         /// </summary>
-        public async Task<TingeeApiResponse<PagedResultDto<OpenApiTransactionPagedOuputDto>?>> TransactionGetPagingAsync(
+        public async Task<TingeeApiResponse<PagedResultDto<OpenApiTransactionPagedOuputDto>?>> GetPagingAsync(
             OpenApiTransactionPagedInputDto body,
             CancellationToken cancellationToken = default)
         {
@@ -563,11 +616,21 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+    }
+
+    // Group: Merchant
+    private MerchantGroup? _merchant;
+    public MerchantGroup Merchant => _merchant ??= new MerchantGroup(_httpClient);
+
+    public sealed class MerchantGroup
+    {
+        private readonly TingeeHttpClient _httpClient;
+        internal MerchantGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
         /// POST /v1/merchant/get-paging-config
         /// </summary>
-        public async Task<TingeeApiResponse<PagedResultDto<MerchantBankConfigPagedOutputDto>?>> MerchantGetPagingConfigAsync(
+        public async Task<TingeeApiResponse<PagedResultDto<MerchantBankConfigPagedOutputDto>?>> GetPagingConfigAsync(
             OpenApiMerchantBankConfigPagedInputDto body,
             CancellationToken cancellationToken = default)
         {
@@ -579,11 +642,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/merchant/create-or-update-config
         /// </summary>
-        public async Task<TingeeApiResponse<double?>> MerchantCreateOrUpdateConfigAsync(
+        public async Task<TingeeApiResponse<double?>> CreateOrUpdateConfigAsync(
             OpenApiBankCreateOrUpdateConfigDto body,
             CancellationToken cancellationToken = default)
         {
@@ -595,11 +657,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/merchant/delete-config
         /// </summary>
-        public async Task<TingeeApiResponse<double?>> MerchantDeleteConfigAsync(
+        public async Task<TingeeApiResponse<double?>> DeleteConfigAsync(
             OpenApiDeleteConfigDto body,
             CancellationToken cancellationToken = default)
         {
@@ -611,11 +672,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/merchant/config-account-business
         /// </summary>
-        public async Task<TingeeApiResponse<OpenApiCreateBankVAOutputDto?>> MerchantConfigAccountBusinessAsync(
+        public async Task<TingeeApiResponse<OpenApiCreateBankVAOutputDto?>> ConfigAccountBusinessAsync(
             OpenApiConfigAccountBusinessDto body,
             CancellationToken cancellationToken = default)
         {
@@ -627,11 +687,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/merchant/delete-config-account-business
         /// </summary>
-        public async Task<TingeeApiResponse<object?>> MerchantDeleteConfigAccountBusinessAsync(
+        public async Task<TingeeApiResponse<object?>> DeleteConfigAccountBusinessAsync(
             OpenApiDeleteConfigBusinessDto body,
             CancellationToken cancellationToken = default)
         {
@@ -643,11 +702,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/merchant/create
         /// </summary>
-        public async Task<TingeeApiResponse<double?>> MerchantCreateAsync(
+        public async Task<TingeeApiResponse<double?>> CreateAsync(
             OpenApiCreateMerchantDto body,
             CancellationToken cancellationToken = default)
         {
@@ -659,11 +717,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/merchant/get-paging
         /// </summary>
-        public async Task<TingeeApiResponse<PagedResultDto<MerchantDto>?>> MerchantGetPagingAsync(
+        public async Task<TingeeApiResponse<PagedResultDto<MerchantDto>?>> GetPagingAsync(
             OpenApiGetPagingMerchantsDto body,
             CancellationToken cancellationToken = default)
         {
@@ -675,12 +732,11 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// DELETE /v1/merchant/delete
         /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> MerchantDeleteAsync(
-            double merchantId,
+        public async Task<TingeeApiResponse<EmptyDto?>> DeleteAsync(
+            double merchantid,
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<EmptyDto?>>(
@@ -688,17 +744,27 @@ public sealed partial class TingeeClient
                 path: "/v1/merchant/delete",
                 body: null,
                 query: new Dictionary<string, string?>
-            {
-                ["merchantId"] = merchantId.ToString()
-            },
+                    {
+                        ["merchantId"] = merchantid.ToString()
+                    },
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+    }
+
+    // Group: DirectDebit
+    private DirectDebitGroup? _directDebit;
+    public DirectDebitGroup DirectDebit => _directDebit ??= new DirectDebitGroup(_httpClient);
+
+    public sealed class DirectDebitGroup
+    {
+        private readonly TingeeHttpClient _httpClient;
+        internal DirectDebitGroup(TingeeHttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>
         /// POST /v1/direct-debit/register
         /// </summary>
-        public async Task<TingeeApiResponse<string?>> DirectDebitRegisterAsync(
+        public async Task<TingeeApiResponse<string?>> RegisterAsync(
             OpenApiRegisterDto body,
             CancellationToken cancellationToken = default)
         {
@@ -710,11 +776,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/direct-debit/payment-bill
         /// </summary>
-        public async Task<TingeeApiResponse<PaymentBillResponseDto?>> DirectDebitPaymentBillAsync(
+        public async Task<TingeeApiResponse<PaymentBillResponseDto?>> PaymentBillAsync(
             OpenApiPaymentBillDto body,
             CancellationToken cancellationToken = default)
         {
@@ -726,11 +791,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// DELETE /v1/direct-debit/delete-subscription
         /// </summary>
-        public async Task<TingeeApiResponse<DeleteSubscriptionOutputDto?>> DirectDebitDeleteSubscriptionAsync(
+        public async Task<TingeeApiResponse<DeleteSubscriptionOutputDto?>> DeleteSubscriptionAsync(
             OpenApiDeleteSubscriptionDto body,
             CancellationToken cancellationToken = default)
         {
@@ -742,11 +806,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// POST /v1/direct-debit/refund
         /// </summary>
-        public async Task<TingeeApiResponse<RefundOutputDto?>> DirectDebitRefundAsync(
+        public async Task<TingeeApiResponse<RefundOutputDto?>> RefundAsync(
             OpenApiRefundInputDto body,
             CancellationToken cancellationToken = default)
         {
@@ -758,11 +821,10 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// PUT /v1/direct-debit/edit-confirm-payment-method
         /// </summary>
-        public async Task<TingeeApiResponse<string?>> DirectDebitEditConfirmPaymentMethodAsync(
+        public async Task<TingeeApiResponse<string?>> EditConfirmPaymentMethodAsync(
             OpenApiEditConfirmBeforePaymentMethodDto body,
             CancellationToken cancellationToken = default)
         {
@@ -774,14 +836,13 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// GET /v1/direct-debit/get-subscription-status
         /// </summary>
-        public async Task<TingeeApiResponse<OpenApiSubscriptionStatusResponseDto?>> DirectDebitGetSubscriptionStatusAsync(
-            string requestId,
-            string subscriptionId,
-            string tokenRef,
+        public async Task<TingeeApiResponse<OpenApiSubscriptionStatusResponseDto?>> GetSubscriptionStatusAsync(
+            string requestid,
+            string subscriptionid,
+            string tokenref,
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<OpenApiSubscriptionStatusResponseDto?>>(
@@ -789,22 +850,21 @@ public sealed partial class TingeeClient
                 path: "/v1/direct-debit/get-subscription-status",
                 body: null,
                 query: new Dictionary<string, string?>
-            {
-                ["requestId"] = requestId.ToString(),
-                ["subscriptionId"] = subscriptionId.ToString(),
-                ["tokenRef"] = tokenRef.ToString()
-            },
+                    {
+                        ["requestId"] = requestid?.ToString(),
+                        ["subscriptionId"] = subscriptionid.ToString(),
+                        ["tokenRef"] = tokenref.ToString()
+                    },
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// GET /v1/direct-debit/get-transaction-status
         /// </summary>
-        public async Task<TingeeApiResponse<OpenApiPaymentTransactionStatusResponseDto?>> DirectDebitGetTransactionStatusAsync(
-            string transactionId,
-            string tokenRef,
-            string subscriptionId,
+        public async Task<TingeeApiResponse<OpenApiPaymentTransactionStatusResponseDto?>> GetTransactionStatusAsync(
+            string transactionid,
+            string tokenref,
+            string subscriptionid,
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<OpenApiPaymentTransactionStatusResponseDto?>>(
@@ -812,25 +872,24 @@ public sealed partial class TingeeClient
                 path: "/v1/direct-debit/get-transaction-status",
                 body: null,
                 query: new Dictionary<string, string?>
-            {
-                ["transactionId"] = transactionId.ToString(),
-                ["tokenRef"] = tokenRef.ToString(),
-                ["subscriptionId"] = subscriptionId.ToString()
-            },
+                    {
+                        ["transactionId"] = transactionid.ToString(),
+                        ["tokenRef"] = tokenref.ToString(),
+                        ["subscriptionId"] = subscriptionid.ToString()
+                    },
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-
         /// <summary>
         /// GET /v1/direct-debit/get-paging-transactions
         /// </summary>
-        public async Task<TingeeApiResponse<PagedResultDto<OpenApiPaymentTransactionsPagedOutputDto>?>> DirectDebitGetPagingTransactionsAsync(
-            string subscriptionId,
-            string tokenRef,
-            string startTime,
-            string endTime,
-            double? skipCount,
-            double? maxResultCount,
+        public async Task<TingeeApiResponse<PagedResultDto<OpenApiPaymentTransactionsPagedOutputDto>?>> GetPagingTransactionsAsync(
+            string subscriptionid,
+            string tokenref,
+            string starttime,
+            string endtime,
+            int? skipcount,
+            int? maxresultcount,
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<PagedResultDto<OpenApiPaymentTransactionsPagedOutputDto>?>>(
@@ -838,14 +897,14 @@ public sealed partial class TingeeClient
                 path: "/v1/direct-debit/get-paging-transactions",
                 body: null,
                 query: new Dictionary<string, string?>
-            {
-                ["subscriptionId"] = subscriptionId.ToString(),
-                ["tokenRef"] = tokenRef.ToString(),
-                ["startTime"] = startTime?.ToString(),
-                ["endTime"] = endTime?.ToString(),
-                ["skipCount"] = skipCount?.ToString(),
-                ["maxResultCount"] = maxResultCount?.ToString()
-            },
+                    {
+                        ["subscriptionId"] = subscriptionid.ToString(),
+                        ["tokenRef"] = tokenref.ToString(),
+                        ["startTime"] = starttime?.ToString(),
+                        ["endTime"] = endtime?.ToString(),
+                        ["skipCount"] = skipcount?.ToString(),
+                        ["maxResultCount"] = maxresultcount?.ToString()
+                    },
                 cancellationToken: cancellationToken);
             return response.Data!;
         }

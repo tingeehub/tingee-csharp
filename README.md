@@ -29,23 +29,21 @@ using Tingee.Sdk.Client;
 
 var client = new TingeeClient(new TingeeClientOptions
 {
-    SecretKey            = Environment.GetEnvironmentVariable("TINGEE_SECRET_KEY")!,
-    ClientId             = Environment.GetEnvironmentVariable("TINGEE_CLIENT_ID")!,
-    Environment          = TingeeEnvironment.Uat,       // Uat | Production, mặc định Uat
-    TimeoutMilliseconds  = 90_000,                      // mặc định 90s
-    BaseUrl              = "https://uat-open-api.tingee.vn", // tùy chọn, ghi đè Environment
+    SecretKey   = Environment.GetEnvironmentVariable("TINGEE_SECRET_KEY")!,
+    ClientId    = Environment.GetEnvironmentVariable("TINGEE_CLIENT_ID")!,
+    Environment = TingeeEnvironment.Production, // Uat | Production, mặc định Production
 });
 
-var result = await client.V1.MerchantGetPagingAsync(new OpenApiGetMerchantPagedInputDto
+var result = await client.Merchant.GetPagingAsync(new OpenApiGetPagingMerchantsDto
 {
-    MaxResultCount = 10,
     SkipCount      = 0,
+    MaxResultCount = 10,
 });
 
-if (result?.IsSuccess == true)
-    Console.WriteLine(result.Data);
+if (result.IsSuccess)
+    foreach (var m in result.Data!.Items!) Console.WriteLine(m.Name);
 else
-    Console.WriteLine($"Lỗi {result?.Code}: {result?.Message}");
+    Console.Error.WriteLine($"Lỗi {result.Code}: {result.Message}");
 ```
 
 ---
@@ -56,7 +54,7 @@ else
 |---|---|---|---|
 | `SecretKey` | `string` | — | **Bắt buộc.** Secret key từ Tingee Dashboard |
 | `ClientId` | `string` | — | **Bắt buộc.** Client ID từ Tingee Dashboard |
-| `Environment` | `TingeeEnvironment` | `Uat` | `Uat` \| `Production` |
+| `Environment` | `TingeeEnvironment` | `Production` | `Uat` \| `Production` |
 | `BaseUrl` | `string?` | — | Ghi đè URL (bỏ qua `Environment`) |
 | `TimeoutMilliseconds` | `int` | `90000` | Timeout (ms) |
 
@@ -68,7 +66,7 @@ builder.Services.AddSingleton(new TingeeClientOptions
 {
     SecretKey   = builder.Configuration["Tingee:SecretKey"]!,
     ClientId    = builder.Configuration["Tingee:ClientId"]!,
-    Environment = TingeeEnvironment.Uat,
+    Environment = TingeeEnvironment.Production,
 });
 builder.Services.AddSingleton<TingeeClient>();
 ```
@@ -87,35 +85,40 @@ builder.Services.AddSingleton<TingeeClient>();
 
 ## Gọi API
 
-Tất cả phương thức nằm trong `client.V1.*`:
+Các phương thức được nhóm theo tính năng (`client.<Group>.<Method>Async()`):
 
 ```csharp
-// Lấy danh sách shop (có phân trang)
-var result = await client.V1.ShopGetPagingAsync(new OpenApiGetShopPagedInputDto
+// Merchant — lấy danh sách
+var result = await client.Merchant.GetPagingAsync(new OpenApiGetPagingMerchantsDto
 {
-    MaxResultCount = 10,
-    SkipCount      = 0,
+    SkipCount = 0, MaxResultCount = 10,
 });
-if (result?.IsSuccess == true)
-    foreach (var shop in result.Data!.Items!) Console.WriteLine(shop.Name);
+if (result.IsSuccess)
+    foreach (var m in result.Data!.Items!) Console.WriteLine(m.Name);
+
+// Shop — lấy danh sách
+var shops = await client.Shop.GetPagingAsync(new OpenApiGetShopPagedInputDto
+{
+    SkipCount = 0, MaxResultCount = 10,
+});
 
 // Direct Debit
-var sub = await client.V1.DirectDebitGetSubscriptionStatusAsync(new DirectDebitGetSubscriptionStatusInputDto
-{
-    RequestId      = "uuid-here",
-    SubscriptionId = "uuid-here",
-    TokenRef       = "token-ref",
-});
+var sub = await client.DirectDebit.GetSubscriptionStatusAsync(
+    requestId: "uuid-here",
+    subscriptionId: "uuid-here",
+    tokenRef: "token-ref");
 ```
 
-> **Lưu ý:** SDK trả về `TingeeApiResponse<T>` với `Code` và `Message`. Dùng `result?.IsSuccess == true` hoặc `result?.Code == "00"` để xác định thành công — SDK **không tự throw** khi `Code != "00"`.
+> **Lưu ý:** SDK trả về `TingeeApiResponse<T>` với `Code` và `Message`. Dùng `result.IsSuccess` hoặc `result.Code == "00"` để xác định thành công — SDK **không tự throw** khi `Code != "00"`.
 
 ---
 
 ## Xác thực Webhook
 
+Khi Tingee gọi vào endpoint webhook của bạn, dùng `client.VerifyWebhookSignature()`:
+
 ```csharp
-// ASP.NET Core Controller
+// ASP.NET Core Controller — truyền object
 [HttpPost("/webhook/tingee")]
 public async Task<IActionResult> HandleWebhook()
 {
@@ -125,7 +128,7 @@ public async Task<IActionResult> HandleWebhook()
 
     var result = client.VerifyWebhookSignature(signature, timestamp, body);
 
-    if (result.IsError == true)
+    if (!result.IsValid)
         return Unauthorized(new { error = result.Message });
 
     // Xử lý giao dịch...
@@ -133,16 +136,26 @@ public async Task<IActionResult> HandleWebhook()
 }
 ```
 
----
-
-## Bank Constants
-
 ```csharp
-using Tingee.Sdk.Types;
+// Truyền raw JSON string — tự động parse
+[HttpPost("/webhook/tingee")]
+public async Task<IActionResult> HandleWebhook()
+{
+    var signature = Request.Headers["x-signature"].ToString();
+    var timestamp = Request.Headers["x-request-timestamp"].ToString();
 
-BankNameEnum.Vietcombank.GetBin()       // "970436"
-BankNameEnum.Vietcombank.GetShortName() // "Vietcombank"
-BankNameEnum.Vietcombank.GetFullName()  // "Ngân hàng TMCP Ngoại Thương Việt Nam"
+    Request.EnableBuffering();
+    using var reader = new StreamReader(Request.Body, leaveOpen: true);
+    var rawBody = await reader.ReadToEndAsync();
+
+    var result = client.VerifyWebhookSignature(signature, timestamp, rawBody);
+
+    if (!result.IsValid)
+        return Unauthorized(new { error = result.Message });
+
+    // Xử lý giao dịch...
+    return Ok(new { received = true });
+}
 ```
 
 ---

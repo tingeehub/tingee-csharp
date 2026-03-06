@@ -9,18 +9,17 @@ public static class SignatureUtils
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
     };
 
     /// <summary>
     /// Generate signature for Tingee API request.
     /// Signature format: HMAC-SHA512(secretKey, timestamp:JSON.stringify(body))
+    /// body=null serializes to "null" — same as JavaScript's JSON.stringify(null).
     /// </summary>
     public static string GenerateSignature(string secretKey, string timestamp, object? body)
     {
-        var jsonBody = body is null
-            ? "{}"
-            : JsonSerializer.Serialize(body, JsonOptions);
+        // JSON.stringify(null) === "null" in JavaScript — match that behaviour
+        var jsonBody = JsonSerializer.Serialize(body, JsonOptions);
 
         var message = $"{timestamp}:{jsonBody}";
         using var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(secretKey));

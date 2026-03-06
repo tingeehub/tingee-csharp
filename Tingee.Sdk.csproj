@@ -5,11 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>CS1591;CS1573;CS8632</NoWarn>
+    <NoWarn>CS1591;CS1573;CS8632;CS8618</NoWarn>
     <AssemblyName>Tingee.Sdk</AssemblyName>
     <RootNamespace>Tingee.Sdk</RootNamespace>
     <PackageId>Tingee.Sdk</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.0-beta</Version>
     <Authors>Tingee</Authors>
     <Company>Tingee</Company>
     <Description>Tingee Open API SDK for .NET (C#)</Description>
