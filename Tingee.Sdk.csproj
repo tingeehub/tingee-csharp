@@ -9,7 +9,7 @@
     <AssemblyName>Tingee.Sdk</AssemblyName>
     <RootNamespace>Tingee.Sdk</RootNamespace>
     <PackageId>Tingee.Sdk</PackageId>
-    <Version>0.1.0-beta</Version>
+    <Version>0.1.0-beta.1</Version>
     <Authors>Tingee</Authors>
     <Company>Tingee</Company>
     <RepositoryUrl>https://github.com/tingeehub/tingee-csharp</RepositoryUrl>
