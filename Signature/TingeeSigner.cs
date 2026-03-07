@@ -23,7 +23,7 @@ public sealed class WebhookVerifyResult
 public static class TingeeSigner
 {
     private static readonly string[] RequiredBodyFields =
-        ["clientId", "transactionCode", "amount", "bank", "transactionDate"];
+        ["clientId", "transactionCode", "amount", "bank", "accountNumber", "transactionDate"];
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -58,25 +58,27 @@ public static class TingeeSigner
     ///     secretToken: Environment.GetEnvironmentVariable("TINGEE_SECRET_TOKEN")!,
     ///     signature:   Request.Headers["x-signature"],
     ///     timestamp:   Request.Headers["x-request-timestamp"],
-    ///     body:        await Request.ReadFromJsonAsync&lt;Dictionary&lt;string, object&gt;&gt;()
+    ///     body:        await Request.ReadFromJsonAsync&lt;TingeeWebhookBody&gt;()
     /// );
     /// if (!result.IsValid)
     ///     return Unauthorized(result);
     /// </code>
     /// </example>
+
+    /// <summary>Verify webhook signature from a raw JSON string body.</summary>
     public static WebhookVerifyResult VerifyWebhookSignature(
-        string                      secretToken,
-        string?                     signature,
-        string?                     timestamp,
-        string?                     body)
+        string  secretToken,
+        string? signature,
+        string? timestamp,
+        string? bodyJson)
     {
-        if (body is null)
+        if (bodyJson is null)
             return new() { Code = "MISSING_BODY", Message = "body is required and must be an object" };
 
-        Dictionary<string, object>? parsed;
+        Tingee.Sdk.Types.TingeeWebhookBody? parsed;
         try
         {
-            parsed = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
+            parsed = JsonSerializer.Deserialize<Tingee.Sdk.Types.TingeeWebhookBody>(bodyJson);
         }
         catch
         {
@@ -86,11 +88,12 @@ public static class TingeeSigner
         return VerifyWebhookSignature(secretToken, signature, timestamp, parsed);
     }
 
+    /// <summary>Verify webhook signature from a typed TingeeWebhookBody (e.g. from [FromBody]).</summary>
     public static WebhookVerifyResult VerifyWebhookSignature(
-        string                      secretToken,
-        string?                     signature,
-        string?                     timestamp,
-        Dictionary<string, object>? body)
+        string                               secretToken,
+        string?                              signature,
+        string?                              timestamp,
+        Tingee.Sdk.Types.TingeeWebhookBody?  body)
     {
         if (string.IsNullOrEmpty(signature))
             return new() { Code = "MISSING_SIGNATURE", Message = "x-signature header is required" };
@@ -101,14 +104,15 @@ public static class TingeeSigner
         if (!System.Text.RegularExpressions.Regex.IsMatch(timestamp, @"^\d{17}$"))
             return new() { Code = "INVALID_TIMESTAMP", Message = "x-request-timestamp must be in yyyyMMddHHmmssSSS format (17 digits)" };
 
-        if (body is null || body.Count == 0)
+        if (body is null)
             return new() { Code = "MISSING_BODY", Message = "body is required and must be an object" };
 
-        foreach (var field in RequiredBodyFields)
-        {
-            if (!body.TryGetValue(field, out var val) || val is null || string.IsNullOrEmpty(val.ToString()))
-                return new() { Code = "MISSING_BODY_FIELD", Message = $"body.{field} is required" };
-        }
+        if (string.IsNullOrEmpty(body.ClientId))        return new() { Code = "MISSING_BODY_FIELD", Message = "body.clientId is required" };
+        if (string.IsNullOrEmpty(body.TransactionCode)) return new() { Code = "MISSING_BODY_FIELD", Message = "body.transactionCode is required" };
+        if (body.Amount == 0)                           return new() { Code = "MISSING_BODY_FIELD", Message = "body.amount is required" };
+        if (string.IsNullOrEmpty(body.Bank))            return new() { Code = "MISSING_BODY_FIELD", Message = "body.bank is required" };
+        if (string.IsNullOrEmpty(body.AccountNumber))   return new() { Code = "MISSING_BODY_FIELD", Message = "body.accountNumber is required" };
+        if (string.IsNullOrEmpty(body.TransactionDate)) return new() { Code = "MISSING_BODY_FIELD", Message = "body.transactionDate is required" };
 
         var expected = GenerateSignature(secretToken, timestamp, body);
 

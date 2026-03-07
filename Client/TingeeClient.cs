@@ -59,9 +59,9 @@ public sealed partial class TingeeClient
 
     /// <summary>Verify an incoming Tingee webhook signature using the secretKey already set on this instance.</summary>
     public WebhookVerifyResult VerifyWebhookSignature(
-        string?                     signature,
-        string?                     timestamp,
-        Dictionary<string, object>? body)
+        string?          signature,
+        string?          timestamp,
+        TingeeWebhookBody? body)
         => TingeeSigner.VerifyWebhookSignature(_secretKey, signature, timestamp, body);
 
     /// <summary>
