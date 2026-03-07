@@ -381,13 +381,13 @@ public sealed class OpenApiCreateVAInpuDto
     [System.Text.Json.Serialization.JsonPropertyName("accountType")]
     public required BankAccountTypeEnum AccountType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
+    public string? AccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
+    public string? AccountName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("identity")]
-    public required string Identity { get; set; }
+    public string? Identity { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("mobile")]
-    public required string Mobile { get; set; }
+    public string? Mobile { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("masterMerchantId")]
     public int? MasterMerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("shopId")]
@@ -437,9 +437,9 @@ public sealed class OpenApiCreateVAInpuDto
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("redirectUrl")]
-    public required string RedirectUrl { get; set; }
+    public string? RedirectUrl { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("webhookUrl")]
-    public required string WebhookUrl { get; set; }
+    public string? WebhookUrl { get; set; }
 }
 
 public sealed class OpenApiConfirmVAOuputDto
@@ -885,7 +885,7 @@ public sealed class OpenApiCreateOrUpdateShopDto
     [System.Text.Json.Serialization.JsonPropertyName("email")]
     public string? Email { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("phoneNumber")]
-    public required string PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("provinceId")]
     public string? ProvinceId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("districtId")]
@@ -1591,11 +1591,11 @@ public sealed class OpenApiConfigAccountBusinessDto
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public BankNameEnum? BankName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
+    public string? AccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
+    public string? AccountName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("mobile")]
-    public required string Mobile { get; set; }
+    public string? Mobile { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
     public string? VaPrefix { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
