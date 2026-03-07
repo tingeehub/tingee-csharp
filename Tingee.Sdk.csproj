@@ -12,6 +12,8 @@
     <Version>0.1.0-beta</Version>
     <Authors>Tingee</Authors>
     <Company>Tingee</Company>
+    <RepositoryUrl>https://github.com/tingeehub/tingee-csharp</RepositoryUrl>
+<RepositoryType>git</RepositoryType>
     <Description>Tingee Open API SDK for .NET (C#)</Description>
     <PackageTags>tingee;sdk;payment;api;vietnam</PackageTags>
     <PackageProjectUrl>https://developers.tingee.vn</PackageProjectUrl>
