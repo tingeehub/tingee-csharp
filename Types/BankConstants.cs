@@ -20,6 +20,24 @@ public enum BankName
     MSB,
 }
 
+/// <summary>Bank BIN (Bank Identification Number) constants — string equivalent of BankBinEnum in other SDKs.</summary>
+public static class BankBin
+{
+    public const string OCB      = "970448";
+    public const string BIDV     = "970418";
+    public const string MBB      = "970422";
+    public const string ACB      = "970416";
+    public const string VPB      = "970432";
+    public const string PGB      = "970430";
+    public const string VIB      = "970441";
+    public const string STB      = "970403";
+    public const string CTG      = "970415";
+    public const string VCB      = "970436";
+    public const string AGRIBANK = "970405";
+    public const string SHINHAN  = "970424";
+    public const string COB      = "970446";
+}
+
 public enum BankAccountType
 {
     PersonalAccount,

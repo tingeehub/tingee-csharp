@@ -48,6 +48,7 @@ public enum BankNameEnum
 
 public sealed class OpenApiGenerateVietQRInputDto
 {
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -85,16 +86,17 @@ public sealed class GenerateDynamicQRInputDto
     public required string VaAccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("qrCodeType")]
     public required QRCodeTypeEnum QrCodeType { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public BankNameEnum? BankName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("amount")]
-    public required long Amount { get; set; }
+    public long? Amount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("purpose")]
     public string? Purpose { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("expireInMinute")]
-    public required int ExpireInMinute { get; set; }
+    public int? ExpireInMinute { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("extraInfo")]
     public string? ExtraInfo { get; set; }
 }
@@ -120,6 +122,7 @@ public sealed class OpenApiBillInfoDto
     public required string BillId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("qrCodeType")]
     public required string QrCodeType { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
@@ -159,6 +162,7 @@ public sealed class OpenApiTransactionPagedOuputDto
     public required int MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("shopId")]
     public required int ShopId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("cashFlowSource")]
@@ -246,6 +250,7 @@ public sealed class OpenApiGetVAPagedOuputDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public required BankNameEnum BankName { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountType")]
@@ -295,6 +300,7 @@ public sealed class OpenApiGetVAPagedInputDto
     public int? AgentId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("dataAccess")]
     public required DataAccessFilterEnum DataAccess { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -303,6 +309,7 @@ public sealed class OpenApiGetVAPagedInputDto
 
 public sealed class OpenApiGenerateVietQROuputDto
 {
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
@@ -430,6 +437,7 @@ public sealed class OpenApiCreateVAInpuDto
     public string? VaAccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("acbUserId")]
     public string? AcbUserId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -464,6 +472,7 @@ public sealed class OpenApiBankConfirmVAInputDto
     public required string OtpNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public required BankNameEnum BankName { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
 }
@@ -480,6 +489,7 @@ public sealed class OpenApiRegisterNotifyDto
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumber")]
     public required string VaAccountNumber { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -492,6 +502,7 @@ public sealed class OpenApiRefundDto
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("transactionCode")]
     public required string TransactionCode { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -606,6 +617,7 @@ public sealed class BIDVOpenApiReadAmountDto
     public required string TransactionId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("amount")]
     public required long Amount { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("firstDisplayText")]
@@ -628,6 +640,7 @@ public sealed class OpenApiReadAmountDto
     public required string TransactionId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("amount")]
     public required long Amount { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("firstDisplayText")]
@@ -652,6 +665,7 @@ public sealed class OpenApiShowQRCodeDto
     public required long Amount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("qrCode")]
     public required string QrCode { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -791,16 +805,17 @@ public sealed class OpenApiGenerateAndShowDynamicQrCodeDto
     public required string VaAccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("qrCodeType")]
     public required QRCodeTypeEnum QrCodeType { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public BankNameEnum? BankName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("amount")]
-    public required long Amount { get; set; }
+    public long? Amount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("purpose")]
     public string? Purpose { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("expireInMinute")]
-    public required int ExpireInMinute { get; set; }
+    public int? ExpireInMinute { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("extraInfo")]
     public string? ExtraInfo { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("uuid")]
@@ -1094,6 +1109,7 @@ public sealed class OpenApiDeepLinkDto
     public required string RedirectUrl { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("callbackUrl")]
     public required string CallbackUrl { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("destinationBankBin")]
@@ -1392,6 +1408,7 @@ public sealed class V2AccountNumberDDLDto
     public required string Name { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public required int MerchantId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -1452,6 +1469,7 @@ public sealed class OpenApiTransactionPagedInputDto
     public IList<double>? ShopIds { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumbers")]
     public IList<string>? VaAccountNumbers { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("billId")]
@@ -1482,6 +1500,7 @@ public sealed class MerchantBankConfigPagedOutputDto
     public required BankAccountTypeEnum AccountType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("configDto")]
     public object ConfigDto { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -1502,6 +1521,7 @@ public sealed class OpenApiMerchantBankConfigPagedInputDto
     public BankAccountTypeEnum? AccountType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -1560,6 +1580,7 @@ public sealed class OpenApiBankCreateOrUpdateConfigDto
     public string? OtpNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("confirmId")]
     public string? ConfirmId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -1602,6 +1623,7 @@ public sealed class OpenApiConfigAccountBusinessDto
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("acbUserId")]
     public required string AcbUserId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
 }
@@ -1614,6 +1636,7 @@ public sealed class OpenApiDeleteConfigBusinessDto
     public required ACBConfigBusinessDto ConfigRemove { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -1974,6 +1997,7 @@ public sealed class OpenApiRegisterDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("requestId")]
     public required string RequestId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountName")]
@@ -2148,6 +2172,7 @@ public sealed class OpenApiSubscriptionStatusResponseDto
     public required DirectDebitStatusEnum Status { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("subscriptionId")]
     public required string SubscriptionId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
 }
@@ -2184,6 +2209,7 @@ public sealed class OpenApiPaymentTransactionStatusResponseDto
     public string? SubscriptionId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("tokenRef")]
     public required string TokenRef { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("customer")]
@@ -2214,6 +2240,7 @@ public sealed class OpenApiPaymentTransactionsPagedOutputDto
     public required string Code { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public required BankNameEnum BankName { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("amount")]
