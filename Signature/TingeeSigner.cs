@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace Tingee.Sdk.Signature;
 
-/// <summary>Result of <see cref="TingeeSigner.VerifyWebhookSignature(string, string?, string?, Dictionary{string, object}?)"/>.</summary>
+/// <summary>Result of <see cref="TingeeSigner.VerifyWebhookSignature(string, string?, string?, string?)"/>.</summary>
 public sealed class WebhookVerifyResult
 {
     public string Code    { get; init; } = string.Empty;
@@ -32,8 +32,11 @@ public static class TingeeSigner
     /// message = "{timestamp}:{json_body}"
     /// </summary>
     public static string GenerateSignature(string secretKey, string timestamp, object body)
+        => GenerateSignature(secretKey, timestamp, JsonSerializer.Serialize(body));
+
+    /// <summary>Generate HMAC-SHA512 signature from raw JSON string body.</summary>
+    public static string GenerateSignature(string secretKey, string timestamp, string bodyJson)
     {
-        var bodyJson = JsonSerializer.Serialize(body);
         var message  = $"{timestamp}:{bodyJson}";
         var keyBytes = Encoding.UTF8.GetBytes(secretKey);
         var msgBytes = Encoding.UTF8.GetBytes(message);
@@ -65,6 +68,9 @@ public static class TingeeSigner
     /// </code>
     /// </example>
 
+    private static readonly System.Text.RegularExpressions.Regex TimestampRegex =
+        new(@"^\d{17}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
     /// <summary>Verify webhook signature from a raw JSON string body.</summary>
     public static WebhookVerifyResult VerifyWebhookSignature(
         string  secretToken,
@@ -72,20 +78,56 @@ public static class TingeeSigner
         string? timestamp,
         string? bodyJson)
     {
-        if (bodyJson is null)
+        if (string.IsNullOrEmpty(signature))
+            return new() { Code = "MISSING_SIGNATURE", Message = "x-signature header is required" };
+        if (string.IsNullOrEmpty(timestamp))
+            return new() { Code = "MISSING_TIMESTAMP", Message = "x-request-timestamp header is required" };
+        if (!TimestampRegex.IsMatch(timestamp))
+            return new() { Code = "INVALID_TIMESTAMP", Message = "x-request-timestamp must be in yyyyMMddHHmmssSSS format (17 digits)" };
+
+        if (string.IsNullOrEmpty(bodyJson))
             return new() { Code = "MISSING_BODY", Message = "body is required and must be an object" };
 
-        Tingee.Sdk.Types.TingeeWebhookBody? parsed;
+        // Validate required fields using JsonDocument (no dependency on TingeeWebhookBody)
         try
         {
-            parsed = JsonSerializer.Deserialize<Tingee.Sdk.Types.TingeeWebhookBody>(bodyJson);
+            using var doc = JsonDocument.Parse(bodyJson);
+            var root = doc.RootElement;
+            foreach (var field in RequiredBodyFields)
+            {
+                if (!root.TryGetProperty(field, out var prop)
+                    || prop.ValueKind == JsonValueKind.Null
+                    || (prop.ValueKind == JsonValueKind.String && string.IsNullOrEmpty(prop.GetString())))
+                {
+                    return new() { Code = "MISSING_BODY_FIELD", Message = $"body.{field} is required" };
+                }
+            }
         }
         catch
         {
             return new() { Code = "INVALID_BODY", Message = "body string is not valid JSON" };
         }
 
-        return VerifyWebhookSignature(secretToken, signature, timestamp, parsed);
+        // Compute HMAC-SHA512 on raw string: "{timestamp}:{bodyJson}" — same as Node.js
+        var expected = GenerateSignature(secretToken, timestamp, bodyJson);
+
+        // Constant-time comparison
+        try
+        {
+            var expectedBytes = Convert.FromHexString(expected);
+            var actualBytes   = Convert.FromHexString(signature);
+            if (expectedBytes.Length != actualBytes.Length
+                || !CryptographicOperations.FixedTimeEquals(expectedBytes, actualBytes))
+            {
+                return new() { Code = "INVALID_SIGNATURE", Message = "Signature does not match" };
+            }
+        }
+        catch
+        {
+            return new() { Code = "INVALID_SIGNATURE", Message = "Signature format is invalid" };
+        }
+
+        return new() { Code = "00", Message = "OK" };
     }
 
     /// <summary>Verify webhook signature from a typed object (any POCO, Dictionary, etc.).</summary>

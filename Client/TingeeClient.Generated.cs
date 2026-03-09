@@ -86,10 +86,10 @@ public sealed partial class TingeeClient
         /// <summary>
         /// GET /v1/bank/get-banks
         /// </summary>
-        public async Task<TingeeApiResponse<Bank?>> GetBanksAsync(
+        public async Task<TingeeApiResponse<IList<Bank>?>> GetBanksAsync(
             CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.RequestAsync<TingeeApiResponse<Bank?>>(
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<IList<Bank>?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Get,
                 path: "/v1/bank/get-banks",
                 body: null,
