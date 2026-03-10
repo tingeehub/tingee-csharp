@@ -38,7 +38,8 @@ public sealed class TingeeHttpClient
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+        Converters = { new Tingee.Sdk.Types.JsonEnumMemberConverterFactory() }
     };
 
     private readonly string _baseUrl;
@@ -92,8 +93,17 @@ public sealed class TingeeHttpClient
         var path = options.Path;
         var body = options.Body;
 
+        // CRITICAL: serialize body ONCE and use the same JSON for both signature and HTTP body.
+        // Previously body was serialized twice with different options, causing signature mismatch.
+        // When body is null: sign with "{}" to match Node.js (body || {}) and Java (body != null ? body : new HashMap<>())
+        var jsonBody = body is not null
+            ? JsonSerializer.Serialize(body, JsonOptions)
+            : null;
+
+Console.WriteLine($"jsonBody: {jsonBody}");
+
         var timestamp = SignatureUtils.FormatTimestamp();
-        var signature = SignatureUtils.GenerateSignature(_secretKey, timestamp, body);
+        var signature = SignatureUtils.GenerateSignature(_secretKey, timestamp, jsonBody ?? "{}");
 
         var urlBuilder = new StringBuilder();
         urlBuilder.Append(_baseUrl);
@@ -132,10 +142,9 @@ public sealed class TingeeHttpClient
             }
         }
 
-        if (body is not null)
+        if (jsonBody is not null)
         {
-            var json = JsonSerializer.Serialize(body, JsonOptions);
-            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
         }
 
         try
