@@ -100,7 +100,7 @@ public sealed class TingeeHttpClient
             ? JsonSerializer.Serialize(body, JsonOptions)
             : null;
 
-Console.WriteLine($"jsonBody: {jsonBody}");
+
 
         var timestamp = SignatureUtils.FormatTimestamp();
         var signature = SignatureUtils.GenerateSignature(_secretKey, timestamp, jsonBody ?? "{}");
@@ -133,6 +133,7 @@ Console.WriteLine($"jsonBody: {jsonBody}");
         request.Headers.Add("x-signature", signature);
         request.Headers.Add("x-request-timestamp", timestamp);
         request.Headers.Add("x-client-id", _clientId);
+        request.Headers.Add("x-sdk-version", $"tingee-sdk/csharp/{SdkVersion.Version}");
 
         if (options.Headers is not null)
         {
