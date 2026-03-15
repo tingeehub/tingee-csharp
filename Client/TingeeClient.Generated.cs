@@ -244,21 +244,6 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
-        /// <summary>
-        /// POST /v1/bank/refund
-        /// </summary>
-        public async Task<TingeeApiResponse<EmptyDto?>> RefundAsync(
-            OpenApiRefundDto body,
-            CancellationToken cancellationToken = default)
-        {
-            var response = await _httpClient.RequestAsync<TingeeApiResponse<EmptyDto?>>(
-                method: Tingee.Sdk.Http.HttpMethod.Post,
-                path: "/v1/bank/refund",
-                body: body,
-                query: null,
-                cancellationToken: cancellationToken);
-            return response.Data!;
-        }
     }
 
     // Group: Device
