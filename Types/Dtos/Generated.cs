@@ -461,6 +461,8 @@ public sealed class OpenApiConfirmVAOuputDto
     public string? AccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumber")]
     public string? VaAccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("shopId")]
+    public int? ShopId { get; set; }
 }
 
 public sealed class OpenApiBankConfirmVAInputDto
