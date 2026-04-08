@@ -3,5 +3,5 @@ namespace Tingee.Sdk;
 /// <summary>SDK version — auto-updated by <c>npm run version:bump</c></summary>
 internal static class SdkVersion
 {
-    public const string Version = "0.2.1";
+    public const string Version = "0.2.2";
 }
