@@ -6,10 +6,11 @@ namespace Tingee.Sdk.Signature;
 
 public static class SignatureUtils
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    internal static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = { new Tingee.Sdk.Types.JsonEnumMemberConverterFactory() }
+        Converters = { new Tingee.Sdk.Types.JsonEnumMemberConverterFactory() },
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
     /// <summary>

@@ -39,7 +39,8 @@ public sealed class TingeeHttpClient
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-        Converters = { new Tingee.Sdk.Types.JsonEnumMemberConverterFactory() }
+        Converters = { new Tingee.Sdk.Types.JsonEnumMemberConverterFactory() },
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
     private readonly string _baseUrl;

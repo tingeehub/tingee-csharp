@@ -2064,22 +2064,10 @@ public sealed class OpenApiDeleteConfigBusinessDto
     public BankNameEnum? BankName { get; set; }
 }
 
-[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-public enum EventUrlItemType
+public sealed class OpenApiMerchantIdDto
 {
-    [System.Runtime.Serialization.EnumMember(Value = "shop")] SHOP,
-    [System.Runtime.Serialization.EnumMember(Value = "accountNumber")] ACCOUNTNUMBER,
-    [System.Runtime.Serialization.EnumMember(Value = "all")] ALL
-}
-
-public sealed class EventUrlItemDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("url")]
-    public required string Url { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("type")]
-    public required EventUrlItemType Type { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ids")]
-    public IList<string>? Ids { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public required long MerchantId { get; set; }
 }
 
 [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
@@ -2117,34 +2105,32 @@ public sealed class OpenApiCreateMerchantDto
     public string? Address { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("fullAddress")]
     public string? FullAddress { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("eventUrl")]
-    public string? EventUrl { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("eventUrls")]
-    public IList<EventUrlItemDto>? EventUrls { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isLockEvent")]
-    public bool? IsLockEvent { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isOrganizationUnit")]
-    public bool? IsOrganizationUnit { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("referralCode")]
     public string? ReferralCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("userReferralAncestorIds")]
-    public string? UserReferralAncestorIds { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("userReferralLevel")]
-    public double? UserReferralLevel { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("deviceDistributorAncestorMap")]
-    public string? DeviceDistributorAncestorMap { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isMasterMerchant")]
-    public bool? IsMasterMerchant { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("baasType")]
     public MerchantBaasTypeEnum? BaasType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("password")]
     public required string Password { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("appType")]
     public required AppTypeEnum AppType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isMultipleRole")]
-    public bool? IsMultipleRole { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("userReferrerId")]
-    public double? UserReferrerId { get; set; }
+}
+
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum EventUrlItemType
+{
+    [System.Runtime.Serialization.EnumMember(Value = "shop")] SHOP,
+    [System.Runtime.Serialization.EnumMember(Value = "accountNumber")] ACCOUNTNUMBER,
+    [System.Runtime.Serialization.EnumMember(Value = "all")] ALL
+}
+
+public sealed class EventUrlItemDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("url")]
+    public required string Url { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("type")]
+    public required EventUrlItemType Type { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("ids")]
+    public IList<string>? Ids { get; set; }
 }
 
 public sealed class OCBConfigDto

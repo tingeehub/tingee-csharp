@@ -32,7 +32,7 @@ public static class TingeeSigner
     /// message = "{timestamp}:{json_body}"
     /// </summary>
     public static string GenerateSignature(string secretKey, string timestamp, object body)
-        => GenerateSignature(secretKey, timestamp, JsonSerializer.Serialize(body));
+        => GenerateSignature(secretKey, timestamp, JsonSerializer.Serialize(body, SignatureUtils.JsonOptions));
 
     /// <summary>Generate HMAC-SHA512 signature from raw JSON string body.</summary>
     public static string GenerateSignature(string secretKey, string timestamp, string bodyJson)
@@ -141,7 +141,7 @@ public static class TingeeSigner
             return new() { Code = "MISSING_BODY", Message = "body is required and must be an object" };
 
         // Serialize to canonical JSON then validate via the string overload
-        var json = JsonSerializer.Serialize(body);
+        var json = JsonSerializer.Serialize(body, SignatureUtils.JsonOptions);
         return VerifyWebhookSignature(secretToken, signature, timestamp, json);
     }
 }

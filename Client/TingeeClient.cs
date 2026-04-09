@@ -66,7 +66,7 @@ public sealed partial class TingeeClient
         if (body is null)
             return new() { Code = "MISSING_BODY", Message = "body is required and must be an object" };
         // Re-serialize to canonical JSON, then run through the string overload which validates fields
-        var json = System.Text.Json.JsonSerializer.Serialize(body);
+        var json = System.Text.Json.JsonSerializer.Serialize(body, SignatureUtils.JsonOptions);
         return TingeeSigner.VerifyWebhookSignature(_secretKey, signature, timestamp, json);
     }
 

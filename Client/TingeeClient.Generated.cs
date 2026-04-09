@@ -763,11 +763,11 @@ public sealed partial class TingeeClient
         /// <summary>
         /// POST /v1/merchant/create
         /// </summary>
-        public async Task<TingeeApiResponse<long?>> CreateAsync(
+        public async Task<TingeeApiResponse<OpenApiMerchantIdDto?>> CreateAsync(
             OpenApiCreateMerchantDto body,
             CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.RequestAsync<TingeeApiResponse<long?>>(
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<OpenApiMerchantIdDto?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
                 path: "/v1/merchant/create",
                 body: body,
