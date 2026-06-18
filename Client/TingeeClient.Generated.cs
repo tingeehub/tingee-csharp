@@ -423,6 +423,51 @@ public sealed partial class TingeeClient
                 cancellationToken: cancellationToken);
             return response.Data!;
         }
+        /// <summary>
+        /// POST /v1/device/print-receipt
+        /// </summary>
+        public async Task<TingeeApiResponse<EmptyDto?>> PrintReceiptAsync(
+            OpenApiPrintReceiptDto body,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<EmptyDto?>>(
+                method: Tingee.Sdk.Http.HttpMethod.Post,
+                path: "/v1/device/print-receipt",
+                body: body,
+                query: null,
+                cancellationToken: cancellationToken);
+            return response.Data!;
+        }
+        /// <summary>
+        /// POST /v1/device/nfc-command
+        /// </summary>
+        public async Task<TingeeApiResponse<EmptyDto?>> NfcCommandAsync(
+            OpenApiNfcCommandDto body,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<EmptyDto?>>(
+                method: Tingee.Sdk.Http.HttpMethod.Post,
+                path: "/v1/device/nfc-command",
+                body: body,
+                query: null,
+                cancellationToken: cancellationToken);
+            return response.Data!;
+        }
+        /// <summary>
+        /// POST /v1/device/reset-device
+        /// </summary>
+        public async Task<TingeeApiResponse<EmptyDto?>> ResetDeviceAsync(
+            OpenApiResetDeviceDto body,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<EmptyDto?>>(
+                method: Tingee.Sdk.Http.HttpMethod.Post,
+                path: "/v1/device/reset-device",
+                body: body,
+                query: null,
+                cancellationToken: cancellationToken);
+            return response.Data!;
+        }
     }
 
     // Group: Shop
@@ -485,6 +530,21 @@ public sealed partial class TingeeClient
             var response = await _httpClient.RequestAsync<TingeeApiResponse<string?>>(
                 method: Tingee.Sdk.Http.HttpMethod.Post,
                 path: "/v1/deep-link/generate",
+                body: body,
+                query: null,
+                cancellationToken: cancellationToken);
+            return response.Data!;
+        }
+        /// <summary>
+        /// POST /v1/deep-link/generate-bidv-test
+        /// </summary>
+        public async Task<TingeeApiResponse<string?>> GenerateBidvTestAsync(
+            OpenApiDeepLinkBIDVTESTDto body,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<string?>>(
+                method: Tingee.Sdk.Http.HttpMethod.Post,
+                path: "/v1/deep-link/generate-bidv-test",
                 body: body,
                 query: null,
                 cancellationToken: cancellationToken);
@@ -909,6 +969,21 @@ public sealed partial class TingeeClient
             return response.Data!;
         }
         /// <summary>
+        /// POST /v1/e-invoice/get-invoice-info
+        /// </summary>
+        public async Task<TingeeApiResponse<TrackingResultDto?>> GetInvoiceInfoAsync(
+            GetInvoiceInfoQueryDto body,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.RequestAsync<TingeeApiResponse<TrackingResultDto?>>(
+                method: Tingee.Sdk.Http.HttpMethod.Post,
+                path: "/v1/e-invoice/get-invoice-info",
+                body: body,
+                query: null,
+                cancellationToken: cancellationToken);
+            return response.Data!;
+        }
+        /// <summary>
         /// POST /v1/e-invoice/download
         /// </summary>
         public async Task<TingeeApiResponse<DownloadInvoiceOutputDto?>> DownloadAsync(
@@ -927,7 +1002,7 @@ public sealed partial class TingeeClient
         /// POST /v1/e-invoice/invoice-templates
         /// </summary>
         public async Task<TingeeApiResponse<InvoiceTemplateOutputDto?>> InvoiceTemplatesAsync(
-            InvoiceTemplateQueryDto body,
+            InvoiceTemplateInputDto body,
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.RequestAsync<TingeeApiResponse<InvoiceTemplateOutputDto?>>(

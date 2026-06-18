@@ -1,5 +1,11 @@
 # Changelog — Tingee.Sdk (C#)
 
+## [0.2.4] — 2026-06-18
+
+### Fixed
+- Fixed `System.Text.Json` deserialization errors for value types (`int`, `long`, `double`, `bool`) when API returns `null`.
+- Fixed `System.Text.Json` deserialization errors by allowing number reading from string (`JsonNumberHandling.AllowReadingFromString`).
+
 ## [0.2.3] — 2026-04-09
 
 ### Changed
