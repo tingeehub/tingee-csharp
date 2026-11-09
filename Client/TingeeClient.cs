@@ -79,4 +79,15 @@ public sealed partial class TingeeClient
         string?  timestamp,
         string?  body)
         => TingeeSigner.VerifyWebhookSignature(_secretKey, signature, timestamp, body);
+
+    /// <summary>
+    /// Build the response for a webhook URL validation request using this client's secretKey, null if body is not one.
+    /// Use <see cref="TingeeSigner.CreateUrlValidationResponse(string, string?)"/> when your "Webhook verification" credential differs.
+    /// </summary>
+    public UrlValidationResponse? CreateUrlValidationResponse(string? body)
+        => TingeeSigner.CreateUrlValidationResponse(_secretKey, body);
+
+    /// <summary>Same as the string overload, from a typed object.</summary>
+    public UrlValidationResponse? CreateUrlValidationResponse(object? body)
+        => TingeeSigner.CreateUrlValidationResponse(_secretKey, body);
 }

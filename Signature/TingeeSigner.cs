@@ -19,9 +19,23 @@ public sealed class WebhookVerifyResult
     public override string ToString() => $"{{code: \"{Code}\", message: \"{Message}\"}}";
 }
 
+/// <summary>Body your endpoint must return (HTTP 200) for a webhook URL validation request.</summary>
+public sealed class UrlValidationResponse
+{
+    [System.Text.Json.Serialization.JsonPropertyName("plainToken")]
+    public string PlainToken     { get; init; } = string.Empty;
+
+    /// <summary>HMAC-SHA256(secretToken, plainToken), hex.</summary>
+    [System.Text.Json.Serialization.JsonPropertyName("encryptedToken")]
+    public string EncryptedToken { get; init; } = string.Empty;
+}
+
 /// <summary>Tingee webhook signature utilities.</summary>
 public static class TingeeSigner
 {
+    /// <summary>Value of the <c>event</c> field (and <c>webhook-type</c> header) of a URL validation request.</summary>
+    public const string UrlValidationEvent = "url-validation";
+
     private static readonly string[] RequiredBodyFields =
         ["clientId", "transactionCode", "amount", "bank", "accountNumber", "transactionDate"];
 
@@ -143,5 +157,65 @@ public static class TingeeSigner
         // Serialize to canonical JSON then validate via the string overload
         var json = JsonSerializer.Serialize(body, SignatureUtils.JsonOptions);
         return VerifyWebhookSignature(secretToken, signature, timestamp, json);
+    }
+
+    // ── URL validation (challenge) ───────────────────────────────────────────
+
+    /// <summary>
+    /// Build the response for Tingee's webhook URL validation request.
+    /// When you save a webhook URL, Tingee sends <c>{ "event": "url-validation", "plainToken": "...", "timestamp": ... }</c>
+    /// and expects <c>{ "plainToken": "...", "encryptedToken": "..." }</c> back with HTTP 200.
+    /// Returns null when the body is not a URL validation request -> handle it as a normal webhook.
+    /// </summary>
+    /// <param name="secretToken">Secret token of your active "Webhook verification" API credential.</param>
+    /// <param name="bodyJson">Raw JSON request body.</param>
+    /// <example>
+    /// <code>
+    /// var validation = TingeeSigner.CreateUrlValidationResponse(webhookSecretToken, rawBody);
+    /// if (validation is not null)
+    ///     return Ok(validation);
+    /// // verify signature &amp; process webhook ...
+    /// </code>
+    /// </example>
+    public static UrlValidationResponse? CreateUrlValidationResponse(string secretToken, string? bodyJson)
+    {
+        if (string.IsNullOrEmpty(bodyJson))
+            return null;
+
+        string? plainToken;
+        try
+        {
+            using var doc = JsonDocument.Parse(bodyJson);
+            var root = doc.RootElement;
+            if (root.ValueKind != JsonValueKind.Object
+                || !root.TryGetProperty("event", out var evt)
+                || evt.ValueKind != JsonValueKind.String
+                || evt.GetString() != UrlValidationEvent
+                || !root.TryGetProperty("plainToken", out var token)
+                || token.ValueKind != JsonValueKind.String)
+            {
+                return null;
+            }
+            plainToken = token.GetString();
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+
+        if (string.IsNullOrEmpty(plainToken))
+            return null;
+
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretToken));
+        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(plainToken));
+        return new() { PlainToken = plainToken, EncryptedToken = Convert.ToHexString(hash).ToLowerInvariant() };
+    }
+
+    /// <summary>Same as the string overload, from a typed object (Dictionary, JsonElement, POCO...).</summary>
+    public static UrlValidationResponse? CreateUrlValidationResponse(string secretToken, object? body)
+    {
+        if (body is null)
+            return null;
+        return CreateUrlValidationResponse(secretToken, JsonSerializer.Serialize(body, SignatureUtils.JsonOptions));
     }
 }

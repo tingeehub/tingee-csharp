@@ -35,6 +35,9 @@ public sealed class HttpResponse<T>
 
 public sealed class TingeeHttpClient
 {
+    private static readonly string UserAgent =
+        $"tingee-sdk-csharp/{SdkVersion.Version} (.NET/{Environment.Version}; {Environment.OSVersion.Platform})";
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -143,6 +146,7 @@ public sealed class TingeeHttpClient
         request.Headers.Add("x-request-timestamp", timestamp);
         request.Headers.Add("x-client-id", _clientId);
         request.Headers.Add("x-sdk-version", $"tingee-sdk/csharp/{SdkVersion.Version}");
+        request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
 
         if (options.Headers is not null)
         {

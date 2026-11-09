@@ -47,7 +47,8 @@ public enum BankNameEnum
     [System.Runtime.Serialization.EnumMember(Value = "NEXTPAY")] NEXTPAY,
     [System.Runtime.Serialization.EnumMember(Value = "PAYOO")] PAYOO,
     [System.Runtime.Serialization.EnumMember(Value = "BAOKIM")] BAOKIM,
-    [System.Runtime.Serialization.EnumMember(Value = "TPB")] TPB
+    [System.Runtime.Serialization.EnumMember(Value = "TPB")] TPB,
+    [System.Runtime.Serialization.EnumMember(Value = "HDB")] HDB
 }
 
 public sealed class OpenApiGenerateVietQRInputDto
@@ -122,41 +123,6 @@ public sealed class OpenApiDeleteDynamicQRInputDto
     public required string BillId { get; set; }
 }
 
-public sealed class OpenApiOnVADto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumber")]
-    public required string VaAccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("qrCodeType")]
-    public required QRCodeTypeEnum QrCodeType { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public string? BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("name")]
-    public string? Name { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("amount")]
-    public long? Amount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("purpose")]
-    public string? Purpose { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("expireInMinute")]
-    public int? ExpireInMinute { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("extraInfo")]
-    public string? ExtraInfo { get; set; }
-}
-
-public sealed class OpenApiOffVADto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("billId")]
-    public required string BillId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumber")]
-    public required string VaAccountNumber { get; set; }
-}
-
 public sealed class OpenApiBillInfoDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("billId")]
@@ -173,13 +139,13 @@ public sealed class OpenApiBillInfoDto
     [System.Text.Json.Serialization.JsonPropertyName("qrAccount")]
     public required string QrAccount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("amount")]
-    public required long Amount { get; set; }
+    public required double Amount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("purpose")]
-    public string? Purpose { get; set; }
+    public required string Purpose { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("totalAmountPaid")]
-    public long? TotalAmountPaid { get; set; }
+    public required double TotalAmountPaid { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("totalPaymentsCount")]
-    public required int TotalPaymentsCount { get; set; }
+    public required double TotalPaymentsCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("expiredTime")]
     public required string ExpiredTime { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("expireInMinute")]
@@ -290,6 +256,13 @@ public enum StatusMerchantAccountNumberEnum
     [System.Runtime.Serialization.EnumMember(Value = "lock")] LOCK
 }
 
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TransactionTypeEnum
+{
+    [System.Runtime.Serialization.EnumMember(Value = "credit")] CREDIT,
+    [System.Runtime.Serialization.EnumMember(Value = "debit")] DEBIT
+}
+
 public sealed class OpenApiGetVAPagedOuputDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
@@ -311,21 +284,15 @@ public sealed class OpenApiGetVAPagedOuputDto
     public required StatusMerchantAccountNumberEnum Status { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("creationTime")]
     public string? CreationTime { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("transactionType")]
+    public required TransactionTypeEnum TransactionType { get; set; }
 }
 
 [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
 public enum DataAccessFilterEnum
 {
     [System.Runtime.Serialization.EnumMember(Value = "referral-only")] REFERRAL_ONLY,
-    [System.Runtime.Serialization.EnumMember(Value = "distributor-only")] DISTRIBUTOR_ONLY,
-    [System.Runtime.Serialization.EnumMember(Value = "with-package-only")] WITH_PACKAGE_ONLY
-}
-
-[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-public enum TransactionTypeEnum
-{
-    [System.Runtime.Serialization.EnumMember(Value = "credit")] CREDIT,
-    [System.Runtime.Serialization.EnumMember(Value = "debit")] DEBIT
+    [System.Runtime.Serialization.EnumMember(Value = "distributor-only")] DISTRIBUTOR_ONLY
 }
 
 public sealed class OpenApiGetVAPagedInputDto
@@ -335,27 +302,27 @@ public sealed class OpenApiGetVAPagedInputDto
     [System.Text.Json.Serialization.JsonPropertyName("sorting")]
     public string? Sorting { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
-    public required int SkipCount { get; set; }
+    public int? SkipCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
-    public required int MaxResultCount { get; set; }
+    public int? MaxResultCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("startTime")]
     public string? StartTime { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("endTime")]
     public string? EndTime { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public required int MerchantId { get; set; }
+    public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("shopId")]
     public int? ShopId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountType")]
-    public required BankAccountTypeEnum AccountType { get; set; }
+    public BankAccountTypeEnum? AccountType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("status")]
     public StatusMerchantAccountNumberEnum? Status { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("agentId")]
     public int? AgentId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("dataAccess")]
-    public required DataAccessFilterEnum DataAccess { get; set; }
+    public DataAccessFilterEnum? DataAccess { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("transactionType")]
-    public required TransactionTypeEnum TransactionType { get; set; }
+    public TransactionTypeEnum? TransactionType { get; set; }
     /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public string? BankBin { get; set; }
@@ -477,7 +444,8 @@ public enum AppTypeEnum
     [System.Runtime.Serialization.EnumMember(Value = "loa-hub")] LOA_HUB,
     [System.Runtime.Serialization.EnumMember(Value = "mini-app-mbb")] MINI_APP_MBB,
     [System.Runtime.Serialization.EnumMember(Value = "mini-app-zalo")] MINI_APP_ZALO,
-    [System.Runtime.Serialization.EnumMember(Value = "baas")] BAAS
+    [System.Runtime.Serialization.EnumMember(Value = "baas")] BAAS,
+    [System.Runtime.Serialization.EnumMember(Value = "TingeeMerchant")] TINGEEMERCHANT
 }
 
 [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
@@ -539,7 +507,7 @@ public sealed class OpenApiCreateVAInpuDto
     [System.Text.Json.Serialization.JsonPropertyName("isNotifyAccountNumber")]
     public bool? IsNotifyAccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("appType")]
-    public required AppTypeEnum AppType { get; set; }
+    public AppTypeEnum? AppType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("linkType")]
     public LinkTypeEnum? LinkType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumber")]
@@ -547,141 +515,15 @@ public sealed class OpenApiCreateVAInpuDto
     [System.Text.Json.Serialization.JsonPropertyName("acbUserId")]
     public string? AcbUserId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("minAmount")]
-    public required double MinAmount { get; set; }
+    public double? MinAmount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("maxAmount")]
-    public required double MaxAmount { get; set; }
+    public double? MaxAmount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("isAbleOnOffByBill")]
     public bool? IsAbleOnOffByBill { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("requestId")]
     public string? RequestId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("transactionType")]
     public TransactionTypeEnum? TransactionType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("walletId")]
-    public string? WalletId { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public string? BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("redirectUrl")]
-    public string? RedirectUrl { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("webhookUrl")]
-    public string? WebhookUrl { get; set; }
-}
-
-public sealed class OpenApiCreateBatchVaOnOffInputDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("masterMerchantId")]
-    public double? MasterMerchantId { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public string? BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
-    public required BankAccountTypeEnum AccountType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public string? VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantName")]
-    public string? MerchantName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("name")]
-    public string? Name { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("shopId")]
-    public double? ShopId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumbers")]
-    public required IList<string> VaAccountNumbers { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("amount")]
-    public double? Amount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("purpose")]
-    public string? Purpose { get; set; }
-}
-
-public sealed class OpenApiCreateBatchVaOnOffItemOutputDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumber")]
-    public required string VaAccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("qrData")]
-    public required string QrData { get; set; }
-}
-
-public sealed class OpenApiCreateBatchVaOnOffOutputDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("shopId")]
-    public required double ShopId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("qrArray")]
-    public required IList<OpenApiCreateBatchVaOnOffItemOutputDto> QrArray { get; set; }
-}
-
-public sealed class OpenApiCreateDebitAccountInputDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("name")]
-    public string? Name { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("cashFlowSource")]
-    public CashFlowSourceEnum? CashFlowSource { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
-    public BankAccountTypeEnum? AccountType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public string? AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public string? AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("identity")]
-    public string? Identity { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
-    public string? Mobile { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("masterMerchantId")]
-    public int? MasterMerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("shopId")]
-    public int? ShopId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public string? VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaSuffix")]
-    public string? VaSuffix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantName")]
-    public string? MerchantName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantAddress")]
-    public string? MerchantAddress { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("serviceId")]
-    public int? ServiceId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isCreateNonOtp")]
-    public bool? IsCreateNonOtp { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("code")]
-    public string? Code { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("taxCode")]
-    public string? TaxCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("softposUserName")]
-    public string? SoftposUserName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("softposDeveloperId")]
-    public string? SoftposDeveloperId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("softposTid")]
-    public string? SoftposTid { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("softposMid")]
-    public string? SoftposMid { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("authorizationCode")]
-    public string? AuthorizationCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("sessionLogin")]
-    public string? SessionLogin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isNotifyAccountNumber")]
-    public bool? IsNotifyAccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("appType")]
-    public required AppTypeEnum AppType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("linkType")]
-    public LinkTypeEnum? LinkType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumber")]
-    public string? VaAccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("acbUserId")]
-    public string? AcbUserId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("minAmount")]
-    public required double MinAmount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("maxAmount")]
-    public required double MaxAmount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isAbleOnOffByBill")]
-    public bool? IsAbleOnOffByBill { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("requestId")]
-    public string? RequestId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("walletId")]
     public string? WalletId { get; set; }
     /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
@@ -720,10 +562,10 @@ public sealed class OpenApiBankConfirmVAInputDto
     [System.Text.Json.Serialization.JsonPropertyName("otpNumber")]
     public required string OtpNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public required BankNameEnum BankName { get; set; }
+    public BankNameEnum? BankName { get; set; }
     /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public required string BankBin { get; set; }
+    public string? BankBin { get; set; }
 }
 
 public sealed class BankDeleteVAOutputDto
@@ -774,11 +616,14 @@ public sealed class UpdateWebhookNotificationDto
 public enum BankLinkSessionTypeEnum
 {
     [System.Runtime.Serialization.EnumMember(Value = "bank-link")] BANK_LINK,
-    [System.Runtime.Serialization.EnumMember(Value = "bank-config")] BANK_CONFIG
+    [System.Runtime.Serialization.EnumMember(Value = "bank-config")] BANK_CONFIG,
+    [System.Runtime.Serialization.EnumMember(Value = "account-config")] ACCOUNT_CONFIG
 }
 
 public sealed class CreateBankLinkSessionInputDto
 {
+    [System.Text.Json.Serialization.JsonPropertyName("isSandbox")]
+    public bool? IsSandbox { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("shopId")]
@@ -791,12 +636,18 @@ public sealed class CreateBankLinkSessionInputDto
     public IList<BankNameEnum>? DisallowedBanks { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public BankNameEnum? BankName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("defaultBankName")]
+    public BankNameEnum? DefaultBankName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankAccountType")]
+    public BankAccountTypeEnum? BankAccountType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("type")]
     public BankLinkSessionTypeEnum? Type { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("metadata")]
     public string? Metadata { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("redirectUrl")]
     public string? RedirectUrl { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isEnableQRScan")]
+    public bool? IsEnableQRScan { get; set; }
 }
 
 public sealed class OpenApiReadSecurityCodeDto
@@ -839,9 +690,9 @@ public enum DeviceTypeEnum
 public sealed class SendNotifyTingeeBoxDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("type")]
-    public DeviceTypeEnum? Type { get; set; }
+    public required DeviceTypeEnum Type { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("uuid")]
-    public string? Uuid { get; set; }
+    public required string Uuid { get; set; }
 }
 
 public sealed class OpenApiAddDeviceToShop
@@ -867,7 +718,7 @@ public sealed class OpenApiShopLinkToDeviceDto
     [System.Text.Json.Serialization.JsonPropertyName("shopName")]
     public required string ShopName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("shopId")]
-    public required int ShopId { get; set; }
+    public int? ShopId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("isLinkToDevice")]
     public required bool IsLinkToDevice { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("fullAddress")]
@@ -903,45 +754,43 @@ public sealed class OpenApiPrintReceiptItemDto
     [System.Text.Json.Serialization.JsonPropertyName("unit")]
     public string? Unit { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("lineDiscount")]
-    public double? LineDiscount { get; set; }
+    public long? LineDiscount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("promotionLabel")]
     public string? PromotionLabel { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxPercent")]
+    public double? TaxPercent { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxValue")]
+    public long? TaxValue { get; set; }
 }
 
 public sealed class OpenApiPrintDataDto
 {
+    [System.Text.Json.Serialization.JsonPropertyName("templateType")]
+    public string? TemplateType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("lineWidth")]
+    public int? LineWidth { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("qrAlignment")]
+    public string? QrAlignment { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("logo")]
     public string? Logo { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("title")]
+    public string? Title { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("storeName")]
     public required string StoreName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("branchName")]
+    public string? BranchName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("address")]
     public string? Address { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("hotline")]
     public string? Hotline { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("orderCode")]
     public string? OrderCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("items")]
-    public required IList<OpenApiPrintReceiptItemDto> Items { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("totalAmount")]
-    public required long TotalAmount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("discount")]
-    public long? Discount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("qrCode")]
-    public string? QrCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("barcode")]
-    public string? Barcode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("footerNote")]
-    public string? FooterNote { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("voiceFile")]
-    public int? VoiceFile { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("copies")]
-    public int? Copies { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("type")]
-    public double? Type { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("branchName")]
-    public string? BranchName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceNo")]
+    public string? InvoiceNo { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("customerName")]
     public string? CustomerName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("customerId")]
+    public string? CustomerId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("sellerAddressLines")]
     public IList<string>? SellerAddressLines { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("taxCode")]
@@ -950,32 +799,48 @@ public sealed class OpenApiPrintDataDto
     public string? ChannelName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("employeeCode")]
     public string? EmployeeCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("customerId")]
-    public string? CustomerId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("createdAt")]
     public string? CreatedAt { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("tax")]
-    public double? Tax { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("items")]
+    public required IList<OpenApiPrintReceiptItemDto> Items { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("totalAmount")]
+    public required long TotalAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("discount")]
+    public long? Discount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("vatReduction")]
-    public double? VatReduction { get; set; }
+    public long? VatReduction { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("paidAmount")]
+    public long? PaidAmount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("customerPaid")]
-    public double? CustomerPaid { get; set; }
+    public long? CustomerPaid { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("paymentMethodLabel")]
     public string? PaymentMethodLabel { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("paymentAmount")]
-    public double? PaymentAmount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("note")]
-    public string? Note { get; set; }
+    public long? PaymentAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceStage")]
+    public string? InvoiceStage { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("changeAmount")]
+    public long? ChangeAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("qrCode")]
+    public string? QrCode { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("qrHint")]
     public string? QrHint { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("qrData")]
-    public string? QrData { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("barcode")]
+    public string? Barcode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("footerNote")]
+    public string? FooterNote { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("note")]
+    public string? Note { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankAccountName")]
     public string? BankAccountName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankAccountNo")]
     public string? BankAccountNo { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public string? BankName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("voiceFile")]
+    public int? VoiceFile { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("copies")]
+    public int? Copies { get; set; }
 }
 
 public sealed class OpenApiReadAmountDto
@@ -990,9 +855,7 @@ public sealed class OpenApiReadAmountDto
     public required long Amount { get; set; }
     /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public required string BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
+    public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("firstDisplayText")]
     public string? FirstDisplayText { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("secondDisplayText")]
@@ -1011,6 +874,8 @@ public sealed class OpenApiShowQRCodeDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("uuid")]
+    public string? Uuid { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("vaAccountNumber")]
     public string? VaAccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("amount")]
@@ -1022,8 +887,6 @@ public sealed class OpenApiShowQRCodeDto
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public BankNameEnum? BankName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("uuid")]
-    public required string Uuid { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("deviceType")]
     public DeviceTypeEnum? DeviceType { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("firstText")]
@@ -1038,6 +901,14 @@ public sealed class OpenApiShowQRCodeDto
     public bool? IsStaticQr { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("playSound")]
     public bool? PlaySound { get; set; }
+}
+
+public sealed class OpenApiClearDeviceScreenDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public int? MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("uuid")]
+    public required string Uuid { get; set; }
 }
 
 public sealed class OpenApiGetDevicesLinkToShopOrVA
@@ -1113,6 +984,8 @@ public sealed class DeviceDto
     public string? UseDate { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("securityCode")]
     public string? SecurityCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("warrantyDate")]
+    public string? WarrantyDate { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("selectedBankNames")]
     public IList<BankNameEnum>? SelectedBankNames { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("serialNumber")]
@@ -1160,9 +1033,9 @@ public sealed class OpenApiGetPagingDeviceInputDto
     [System.Text.Json.Serialization.JsonPropertyName("sorting")]
     public string? Sorting { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
-    public required int SkipCount { get; set; }
+    public int? SkipCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
-    public required int MaxResultCount { get; set; }
+    public int? MaxResultCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public required int MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("type")]
@@ -1212,38 +1085,32 @@ public sealed class OpenApiGenerateAndShowDynamicQrCodeDto
 
 public sealed class OpenApiPrintReceiptDto
 {
+    [System.Text.Json.Serialization.JsonPropertyName("templateType")]
+    public string? TemplateType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("lineWidth")]
+    public int? LineWidth { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("qrAlignment")]
+    public string? QrAlignment { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("logo")]
     public string? Logo { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("title")]
+    public string? Title { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("storeName")]
     public required string StoreName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("branchName")]
+    public string? BranchName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("address")]
     public string? Address { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("hotline")]
     public string? Hotline { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("orderCode")]
     public string? OrderCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("items")]
-    public required IList<OpenApiPrintReceiptItemDto> Items { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("totalAmount")]
-    public required long TotalAmount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("discount")]
-    public long? Discount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("qrCode")]
-    public string? QrCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("barcode")]
-    public string? Barcode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("footerNote")]
-    public string? FooterNote { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("voiceFile")]
-    public int? VoiceFile { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("copies")]
-    public int? Copies { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("type")]
-    public double? Type { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("branchName")]
-    public string? BranchName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceNo")]
+    public string? InvoiceNo { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("customerName")]
     public string? CustomerName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("customerId")]
+    public string? CustomerId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("sellerAddressLines")]
     public IList<string>? SellerAddressLines { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("taxCode")]
@@ -1252,32 +1119,48 @@ public sealed class OpenApiPrintReceiptDto
     public string? ChannelName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("employeeCode")]
     public string? EmployeeCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("customerId")]
-    public string? CustomerId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("createdAt")]
     public string? CreatedAt { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("tax")]
-    public double? Tax { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("items")]
+    public required IList<OpenApiPrintReceiptItemDto> Items { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("totalAmount")]
+    public required long TotalAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("discount")]
+    public long? Discount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("vatReduction")]
-    public double? VatReduction { get; set; }
+    public long? VatReduction { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("paidAmount")]
+    public long? PaidAmount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("customerPaid")]
-    public double? CustomerPaid { get; set; }
+    public long? CustomerPaid { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("paymentMethodLabel")]
     public string? PaymentMethodLabel { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("paymentAmount")]
-    public double? PaymentAmount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("note")]
-    public string? Note { get; set; }
+    public long? PaymentAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceStage")]
+    public string? InvoiceStage { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("changeAmount")]
+    public long? ChangeAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("qrCode")]
+    public string? QrCode { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("qrHint")]
     public string? QrHint { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("qrData")]
-    public string? QrData { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("barcode")]
+    public string? Barcode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("footerNote")]
+    public string? FooterNote { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("note")]
+    public string? Note { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankAccountName")]
     public string? BankAccountName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankAccountNo")]
     public string? BankAccountNo { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("bankName")]
     public string? BankName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("voiceFile")]
+    public int? VoiceFile { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("copies")]
+    public int? Copies { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("uuid")]
@@ -1295,9 +1178,61 @@ public sealed class OpenApiNfcCommandDto
     [System.Text.Json.Serialization.JsonPropertyName("playSound")]
     public bool? PlaySound { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("nfcUrl")]
-    public required string NfcUrl { get; set; }
+    public string? NfcUrl { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("nfcPackageName")]
-    public required string NfcPackageName { get; set; }
+    public string? NfcPackageName { get; set; }
+}
+
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum DeviceNotifyOrderFoodNameEnum
+{
+    [System.Runtime.Serialization.EnumMember(Value = "befood")] BEFOOD,
+    [System.Runtime.Serialization.EnumMember(Value = "shopeefood")] SHOPEEFOOD,
+    [System.Runtime.Serialization.EnumMember(Value = "xanhsmfood")] XANHSMFOOD,
+    [System.Runtime.Serialization.EnumMember(Value = "greensmfood")] GREENSMFOOD,
+    [System.Runtime.Serialization.EnumMember(Value = "grabfood")] GRABFOOD,
+    [System.Runtime.Serialization.EnumMember(Value = "ahamove")] AHAMOVE,
+    [System.Runtime.Serialization.EnumMember(Value = "other")] OTHER
+}
+
+public sealed class OpenApiDeviceNotifyOrderDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public int? MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("uuid")]
+    public required string Uuid { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("foodName")]
+    public required DeviceNotifyOrderFoodNameEnum FoodName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("amount")]
+    public double? Amount { get; set; }
+}
+
+public sealed class OpenApiDeviceFeaturesDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("readAmount")]
+    public required bool ReadAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("showStaticQrCode")]
+    public required bool ShowStaticQrCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("showDynamicQrCode")]
+    public required bool ShowDynamicQrCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("printReceipt")]
+    public required bool PrintReceipt { get; set; }
+}
+
+public sealed class OpenApiDeviceFeaturesOutputDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("uuid")]
+    public required string Uuid { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("type")]
+    public required DeviceTypeEnum Type { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("features")]
+    public required OpenApiDeviceFeaturesDto Features { get; set; }
+}
+
+public sealed class OpenApiGetDeviceFeaturesDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("uuid")]
+    public required string Uuid { get; set; }
 }
 
 public sealed class OpenApiResetDeviceDto
@@ -1348,13 +1283,21 @@ public sealed class SendNotifyZaloDto
 public sealed class SendNotifyPlatformDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("telegramDtos")]
-    public required IList<SendNotifyTelegramDto> TelegramDtos { get; set; }
+    public IList<SendNotifyTelegramDto>? TelegramDtos { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("larkDtos")]
-    public required IList<SendNotifyLarkDto> LarkDtos { get; set; }
+    public IList<SendNotifyLarkDto>? LarkDtos { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("zaloDtos")]
-    public required IList<SendNotifyZaloDto> ZaloDtos { get; set; }
+    public IList<SendNotifyZaloDto>? ZaloDtos { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("tingeeBoxDtos")]
-    public required IList<SendNotifyTingeeBoxDto> TingeeBoxDtos { get; set; }
+    public IList<SendNotifyTingeeBoxDto>? TingeeBoxDtos { get; set; }
+}
+
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ShopCreationSourceEnum
+{
+    [System.Runtime.Serialization.EnumMember(Value = "tingee-baas")] TINGEE_BAAS,
+    [System.Runtime.Serialization.EnumMember(Value = "tingee-merchant")] TINGEE_MERCHANT,
+    [System.Runtime.Serialization.EnumMember(Value = "tingee-box")] TINGEE_BOX
 }
 
 public sealed class OpenApiCreateOrUpdateShopDto
@@ -1389,6 +1332,12 @@ public sealed class OpenApiCreateOrUpdateShopDto
     public int? UserReferralLevel { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("deviceDistributorAncestorMap")]
     public string? DeviceDistributorAncestorMap { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("creationSource")]
+    public ShopCreationSourceEnum? CreationSource { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isForceDisableNotify")]
+    public bool? IsForceDisableNotify { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isOpenNotify")]
+    public bool? IsOpenNotify { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
 }
@@ -1412,9 +1361,9 @@ public sealed class OpenApiGetShopPagedInputDto
     [System.Text.Json.Serialization.JsonPropertyName("sorting")]
     public string? Sorting { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
-    public required int SkipCount { get; set; }
+    public int? SkipCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
-    public required int MaxResultCount { get; set; }
+    public int? MaxResultCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
 }
@@ -1426,7 +1375,7 @@ public sealed class OpenApiDeepLinkDto
     [System.Text.Json.Serialization.JsonPropertyName("type")]
     public required string Type { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("qrCode")]
-    public required string QrCode { get; set; }
+    public string? QrCode { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("redirectUrl")]
     public string? RedirectUrl { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("callbackUrl")]
@@ -1435,44 +1384,19 @@ public sealed class OpenApiDeepLinkDto
     [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
     public required string BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("destinationBankBin")]
-    public required string DestinationBankBin { get; set; }
+    public string? DestinationBankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
+    public string? AccountName { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
+    public string? AccountNumber { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("amount")]
     public long? Amount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("content")]
     public string? Content { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("platform")]
+    public double? Platform { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("billNumber")]
-    public required string BillNumber { get; set; }
-}
-
-public sealed class OpenApiDeepLinkBIDVTESTDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("type")]
-    public required string Type { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("qrCode")]
-    public required string QrCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("redirectUrl")]
-    public string? RedirectUrl { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("callbackUrl")]
-    public string? CallbackUrl { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public required string BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("destinationBankBin")]
-    public required string DestinationBankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("amount")]
-    public long? Amount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("content")]
-    public string? Content { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("billNumber")]
-    public required string BillNumber { get; set; }
+    public string? BillNumber { get; set; }
 }
 
 public sealed class OpenApiTransactionPagedInputDto
@@ -1482,9 +1406,9 @@ public sealed class OpenApiTransactionPagedInputDto
     [System.Text.Json.Serialization.JsonPropertyName("sorting")]
     public string? Sorting { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
-    public required int SkipCount { get; set; }
+    public int? SkipCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
-    public required int MaxResultCount { get; set; }
+    public int? MaxResultCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("shopIds")]
@@ -1497,9 +1421,599 @@ public sealed class OpenApiTransactionPagedInputDto
     [System.Text.Json.Serialization.JsonPropertyName("billId")]
     public string? BillId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("startTime")]
-    public string? StartTime { get; set; }
+    public required string StartTime { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("endTime")]
-    public string? EndTime { get; set; }
+    public required string EndTime { get; set; }
+}
+
+public sealed class MerchantBankConfigPagedOutputDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    public required int Id { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("creationTime")]
+    public string? CreationTime { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("creatorUserId")]
+    public double? CreatorUserId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("lastModificationTime")]
+    public string? LastModificationTime { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("lastModifierUserId")]
+    public double? LastModifierUserId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("deleterUserId")]
+    public double? DeleterUserId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public required int MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
+    public required BankAccountTypeEnum AccountType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("configDto")]
+    public object ConfigDto { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
+    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
+    public string? BankBin { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
+    public BankNameEnum? BankName { get; set; }
+}
+
+public sealed class OpenApiMerchantBankConfigPagedInputDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("filter")]
+    public string? Filter { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sorting")]
+    public string? Sorting { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
+    public int? SkipCount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
+    public int? MaxResultCount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
+    public BankAccountTypeEnum? AccountType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public int? MerchantId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
+    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
+    public string? BankBin { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
+    public BankNameEnum? BankName { get; set; }
+}
+
+public sealed class BIDVConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
+    public required string VaPrefix { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankPartnerId")]
+    public required string BankPartnerId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+}
+
+public sealed class CTGConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
+    public required string VaPrefix { get; set; }
+}
+
+public sealed class ACBConfigBusinessDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
+    public required string VaPrefix { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
+    public required string Mobile { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("acbUserId")]
+    public required string AcbUserId { get; set; }
+}
+
+public sealed class MSBConfigBusinessDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
+    public required string VaPrefix { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
+    public required string Mobile { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public required string MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("terminalId")]
+    public required string TerminalId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accessCode")]
+    public required string AccessCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("referralCode")]
+    public required string ReferralCode { get; set; }
+}
+
+public sealed class BaoKimConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("mid")]
+    public string? Mid { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public string? AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("walletId")]
+    public string? WalletId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("privateKey")]
+    public string? PrivateKey { get; set; }
+}
+
+public sealed class HDBConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("secretKey")]
+    public required string SecretKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public required string MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("terminalId")]
+    public required string TerminalId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+}
+
+public sealed class OpenApiBankCreateOrUpdateConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("bidvConfigDto")]
+    public BIDVConfigDto? BidvConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("ctgConfigDto")]
+    public CTGConfigDto? CtgConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("acbConfigDto")]
+    public ACBConfigBusinessDto? AcbConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("msbConfigDto")]
+    public MSBConfigBusinessDto? MsbConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("baokimConfigDto")]
+    public BaoKimConfigDto? BaokimConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("hdbConfigDto")]
+    public HDBConfigDto? HdbConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
+    public required BankAccountTypeEnum AccountType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    public int? Id { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("otpNumber")]
+    public string? OtpNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("confirmId")]
+    public string? ConfirmId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
+    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
+    public string? BankBin { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
+    public BankNameEnum? BankName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public int? MerchantId { get; set; }
+}
+
+public sealed class OpenApiDeleteConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("otpNumber")]
+    public string? OtpNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("confirmId")]
+    public string? ConfirmId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    public required double Id { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public int? MerchantId { get; set; }
+}
+
+public sealed class OpenApiCreateBankVAOutputDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("confirmId")]
+    public string? ConfirmId { get; set; }
+}
+
+public sealed class OpenApiConfigAccountBusinessDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
+    public BankNameEnum? BankName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public string? AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public string? AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
+    public string? Mobile { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
+    public string? VaPrefix { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public int? MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("acbUserId")]
+    public required string AcbUserId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
+    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
+    public string? BankBin { get; set; }
+}
+
+public sealed class OpenApiDeleteConfigBusinessDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
+    public required BankAccountTypeEnum AccountType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("configRemove")]
+    public ACBConfigBusinessDto? ConfigRemove { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public int? MerchantId { get; set; }
+    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
+    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
+    public string? BankBin { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
+    public BankNameEnum? BankName { get; set; }
+}
+
+public sealed class OpenApiMerchantIdDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public required long MerchantId { get; set; }
+}
+
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum MerchantBaasTypeEnum
+{
+    [System.Runtime.Serialization.EnumMember(Value = "trial")] TRIAL,
+    [System.Runtime.Serialization.EnumMember(Value = "trial-extended")] TRIAL_EXTENDED,
+    [System.Runtime.Serialization.EnumMember(Value = "customer")] CUSTOMER,
+    [System.Runtime.Serialization.EnumMember(Value = "cancelled")] CANCELLED,
+    [System.Runtime.Serialization.EnumMember(Value = "unclassified")] UNCLASSIFIED
+}
+
+public sealed class BankLinkConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("phone")]
+    public string? Phone { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("email")]
+    public string? Email { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("brandName")]
+    public string? BrandName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("redirectUrl")]
+    public string? RedirectUrl { get; set; }
+}
+
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum MerchantCreationSourceEnum
+{
+    [System.Runtime.Serialization.EnumMember(Value = "tingee-baas")] TINGEE_BAAS,
+    [System.Runtime.Serialization.EnumMember(Value = "tingee-merchant")] TINGEE_MERCHANT
+}
+
+public sealed class OpenApiCreateMerchantDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    public int? Id { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("code")]
+    public string? Code { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("name")]
+    public required string Name { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("email")]
+    public string? Email { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("phoneNumber")]
+    public required string PhoneNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("website")]
+    public string? Website { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("businessSectorIds")]
+    public IList<double>? BusinessSectorIds { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("provinceId")]
+    public string? ProvinceId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("districtId")]
+    public string? DistrictId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("communeId")]
+    public string? CommuneId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("address")]
+    public string? Address { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("fullAddress")]
+    public string? FullAddress { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("referralCode")]
+    public string? ReferralCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("baasType")]
+    public MerchantBaasTypeEnum? BaasType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankLinkConfigDto")]
+    public BankLinkConfigDto? BankLinkConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("assignedUserId")]
+    public double? AssignedUserId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("creationSource")]
+    public MerchantCreationSourceEnum? CreationSource { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("password")]
+    public string? Password { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("appType")]
+    public AppTypeEnum? AppType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("requirePasswordChange")]
+    public bool? RequirePasswordChange { get; set; }
+}
+
+public sealed class EventUrlItemDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("url")]
+    public required string Url { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("type")]
+    public required EventUrlItemType Type { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("ids")]
+    public IList<string>? Ids { get; set; }
+}
+
+public sealed class FileUploadDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("fileLogId")]
+    public required string FileLogId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("path")]
+    public required string Path { get; set; }
+}
+
+public sealed class OCBConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("clientId")]
+    public required string ClientId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("clientSecret")]
+    public string? ClientSecret { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("pathCertKey")]
+    public FileUploadDto? PathCertKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("pathPrivateKey")]
+    public FileUploadDto? PathPrivateKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("userName")]
+    public required string UserName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("password")]
+    public string? Password { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
+    public string? VaPrefix { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefixForDynamicQR")]
+    public string? VaPrefixForDynamicQR { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumbers")]
+    public IList<string>? AccountNumbers { get; set; }
+}
+
+public sealed class MBBConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("identity")]
+    public required string Identity { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
+    public required string Mobile { get; set; }
+}
+
+public sealed class ShinhanConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
+    public required string VaPrefix { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("clientId")]
+    public required string ClientId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("clientSecret")]
+    public string? ClientSecret { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("pathPublicKey")]
+    public FileUploadDto? PathPublicKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("pathPrivateKey")]
+    public FileUploadDto? PathPrivateKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+}
+
+public sealed class VIBConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
+    public required string VaPrefix { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("pathPublicKey")]
+    public FileUploadDto? PathPublicKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("pathPrivateKey")]
+    public FileUploadDto? PathPrivateKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("basicAuthToken")]
+    public required string BasicAuthToken { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("cif")]
+    public required string Cif { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("clientId")]
+    public required string ClientId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("clientSecret")]
+    public required string ClientSecret { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vaCharactersNumber")]
+    public required int VaCharactersNumber { get; set; }
+}
+
+public sealed class ACBConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("businessAccounts")]
+    public IList<ACBConfigBusinessDto>? BusinessAccounts { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("businessHouseholdAccounts")]
+    public IList<ACBConfigBusinessDto>? BusinessHouseholdAccounts { get; set; }
+}
+
+public sealed class VPBConfigBusinessDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public required string MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("terminalId")]
+    public required string TerminalId { get; set; }
+}
+
+public sealed class VPBConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("businessAccounts")]
+    public IList<VPBConfigBusinessDto>? BusinessAccounts { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("businessHouseholdAccounts")]
+    public IList<VPBConfigBusinessDto>? BusinessHouseholdAccounts { get; set; }
+}
+
+public sealed class VCBConfigBusinessDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
+    public required string AccountNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
+    public required string AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public required string MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("terminalId")]
+    public required string TerminalId { get; set; }
+}
+
+public sealed class VCBConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("businessAccounts")]
+    public IList<VCBConfigBusinessDto>? BusinessAccounts { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("businessHouseholdAccounts")]
+    public IList<VCBConfigBusinessDto>? BusinessHouseholdAccounts { get; set; }
+}
+
+public sealed class BankConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("ocbConfigDtos")]
+    public IList<OCBConfigDto>? OcbConfigDtos { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("mbbConfigDtos")]
+    public IList<MBBConfigDto>? MbbConfigDtos { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bidvConfigDtos")]
+    public IList<BIDVConfigDto>? BidvConfigDtos { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("shinhanConfigDtos")]
+    public IList<ShinhanConfigDto>? ShinhanConfigDtos { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vibConfigDtos")]
+    public IList<VIBConfigDto>? VibConfigDtos { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("ctgConfigDtos")]
+    public IList<CTGConfigDto>? CtgConfigDtos { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("acbConfigDto")]
+    public ACBConfigDto? AcbConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vpbConfigDto")]
+    public VPBConfigDto? VpbConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("vcbConfigDto")]
+    public VCBConfigDto? VcbConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("hdbConfigDto")]
+    public HDBConfigDto? HdbConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("baokimConfigDto")]
+    public BaoKimConfigDto? BaokimConfigDto { get; set; }
+}
+
+public sealed class BNPLConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("baokimConfigDto")]
+    public BaoKimConfigDto? BaokimConfigDto { get; set; }
+}
+
+public sealed class OnePayConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
+    public required string MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("signingKey")]
+    public required string SigningKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("verifyKey")]
+    public required string VerifyKey { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("accessCode")]
+    public required string AccessCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("hashCode")]
+    public required string HashCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("callbackUrl")]
+    public required string CallbackUrl { get; set; }
+}
+
+public sealed class DirectDebitConfigDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("onePayConfigDto")]
+    public OnePayConfigDto? OnePayConfigDto { get; set; }
+}
+
+public sealed class MerchantPackageInfo
+{
+    [System.Text.Json.Serialization.JsonPropertyName("packageName")]
+    public string? PackageName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("expirationDate")]
+    public string? ExpirationDate { get; set; }
+}
+
+public sealed class MerchantDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    public required int Id { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("creationTime")]
+    public string? CreationTime { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isPrepaidCollectionOnMerchant")]
+    public bool? IsPrepaidCollectionOnMerchant { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("code")]
+    public string? Code { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("name")]
+    public required string Name { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("email")]
+    public string? Email { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("phoneNumber")]
+    public required string PhoneNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("website")]
+    public string? Website { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("businessSectorIds")]
+    public IList<double>? BusinessSectorIds { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("provinceId")]
+    public string? ProvinceId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("districtId")]
+    public string? DistrictId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("communeId")]
+    public string? CommuneId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("address")]
+    public string? Address { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("fullAddress")]
+    public string? FullAddress { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("clientId")]
+    public string? ClientId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("secretToken")]
+    public string? SecretToken { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("eventUrl")]
+    public string? EventUrl { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("eventUrls")]
+    public IList<EventUrlItemDto>? EventUrls { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isLockEvent")]
+    public bool? IsLockEvent { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankConfigDto")]
+    public BankConfigDto? BankConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bnplConfigDto")]
+    public BNPLConfigDto? BnplConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("directDebitConfigDto")]
+    public DirectDebitConfigDto? DirectDebitConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sendNotifyPlatformDto")]
+    public SendNotifyPlatformDto? SendNotifyPlatformDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isOrganizationUnit")]
+    public bool? IsOrganizationUnit { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("referralCode")]
+    public string? ReferralCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("userReferralAncestorIds")]
+    public string? UserReferralAncestorIds { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("userReferralLevel")]
+    public double? UserReferralLevel { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("deviceDistributorAncestorMap")]
+    public string? DeviceDistributorAncestorMap { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isMasterMerchant")]
+    public bool? IsMasterMerchant { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("baasType")]
+    public MerchantBaasTypeEnum? BaasType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("bankLinkConfigDto")]
+    public BankLinkConfigDto? BankLinkConfigDto { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("assignedUserId")]
+    public double? AssignedUserId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("creationSource")]
+    public required MerchantCreationSourceEnum CreationSource { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantPackages")]
+    public IList<MerchantPackageInfo>? MerchantPackages { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("masterMerchantNames")]
+    public string? MasterMerchantNames { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isPostpaid")]
+    public bool? IsPostpaid { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("overdraftLimit")]
+    public double? OverdraftLimit { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isLockoutEnabled")]
+    public bool? IsLockoutEnabled { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("assignedUserName")]
+    public string? AssignedUserName { get; set; }
+}
+
+public sealed class OpenApiGetPagingMerchantsDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("filter")]
+    public string? Filter { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sorting")]
+    public string? Sorting { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
+    public int? SkipCount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
+    public int? MaxResultCount { get; set; }
 }
 
 public sealed class OpenApiRegisterDto
@@ -1511,10 +2025,14 @@ public sealed class OpenApiRegisterDto
     public string? BankBin { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountName")]
     public string? AccountName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("email")]
+    public string? Email { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("phone")]
     public required string Phone { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("returnUrl")]
     public required string ReturnUrl { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isSandbox")]
+    public bool? IsSandbox { get; set; }
 }
 
 [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
@@ -1776,547 +2294,6 @@ public sealed class OpenApiPaymentTransactionsPagedOutputDto
     public object AdditionalData { get; set; }
 }
 
-public sealed class MerchantBankConfigPagedOutputDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("id")]
-    public required int Id { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("creationTime")]
-    public string? CreationTime { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("creatorUserId")]
-    public double? CreatorUserId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("lastModificationTime")]
-    public string? LastModificationTime { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("lastModifierUserId")]
-    public double? LastModifierUserId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("deleterUserId")]
-    public double? DeleterUserId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public required int MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
-    public required BankAccountTypeEnum AccountType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("configDto")]
-    public object ConfigDto { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public string? BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
-}
-
-public sealed class OpenApiMerchantBankConfigPagedInputDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("filter")]
-    public string? Filter { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("sorting")]
-    public string? Sorting { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
-    public required int SkipCount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
-    public required int MaxResultCount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
-    public BankAccountTypeEnum? AccountType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public string? BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
-}
-
-public sealed class BIDVConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public required string VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankPartnerId")]
-    public required string BankPartnerId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-}
-
-public sealed class FileUploadDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("fileLogId")]
-    public required string FileLogId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("path")]
-    public required string Path { get; set; }
-}
-
-public sealed class VIBConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public required string VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("pathPublicKey")]
-    public FileUploadDto? PathPublicKey { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("pathPrivateKey")]
-    public FileUploadDto? PathPrivateKey { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("basicAuthToken")]
-    public required string BasicAuthToken { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("cif")]
-    public required string Cif { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("clientId")]
-    public required string ClientId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("clientSecret")]
-    public required string ClientSecret { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaCharactersNumber")]
-    public required int VaCharactersNumber { get; set; }
-}
-
-public sealed class CTGConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public required string VaPrefix { get; set; }
-}
-
-public sealed class ACBConfigBusinessDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public required string VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
-    public required string Mobile { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("acbUserId")]
-    public required string AcbUserId { get; set; }
-}
-
-public sealed class VCBConfigBusinessDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public required string MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("terminalId")]
-    public required string TerminalId { get; set; }
-}
-
-public sealed class MSBConfigBusinessDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public required string VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
-    public required string Mobile { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public required string MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("terminalId")]
-    public required string TerminalId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accessCode")]
-    public required string AccessCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("referralCode")]
-    public required string ReferralCode { get; set; }
-}
-
-public sealed class BaoKimConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("mid")]
-    public string? Mid { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public string? AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("walletId")]
-    public string? WalletId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("privateKey")]
-    public string? PrivateKey { get; set; }
-}
-
-public sealed class PayooConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-}
-
-public sealed class OpenApiBankCreateOrUpdateConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("bidvConfigDto")]
-    public BIDVConfigDto? BidvConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vibConfigDto")]
-    public VIBConfigDto? VibConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ctgConfigDto")]
-    public CTGConfigDto? CtgConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("acbConfigDto")]
-    public ACBConfigBusinessDto? AcbConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vcbConfigDto")]
-    public VCBConfigBusinessDto? VcbConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("msbConfigDto")]
-    public MSBConfigBusinessDto? MsbConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("baokimConfigDto")]
-    public BaoKimConfigDto? BaokimConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("payooConfigDto")]
-    public PayooConfigDto? PayooConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
-    public required BankAccountTypeEnum AccountType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("id")]
-    public int? Id { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("otpNumber")]
-    public string? OtpNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("confirmId")]
-    public string? ConfirmId { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public string? BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-}
-
-public sealed class OpenApiDeleteConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("otpNumber")]
-    public string? OtpNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("confirmId")]
-    public string? ConfirmId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("id")]
-    public required double Id { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-}
-
-public sealed class OpenApiCreateBankVAOutputDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("confirmId")]
-    public string? ConfirmId { get; set; }
-}
-
-public sealed class OpenApiConfigAccountBusinessDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public string? AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public string? AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
-    public string? Mobile { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public string? VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("acbUserId")]
-    public required string AcbUserId { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public string? BankBin { get; set; }
-}
-
-public sealed class OpenApiDeleteConfigBusinessDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("accountType")]
-    public required BankAccountTypeEnum AccountType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("configRemove")]
-    public required ACBConfigBusinessDto ConfigRemove { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public int? MerchantId { get; set; }
-    /// <summary>Bank BIN. Use <see cref="Tingee.Sdk.Types.BankBin"/> constants.</summary>
-    [System.Text.Json.Serialization.JsonPropertyName("bankBin")]
-    public string? BankBin { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankName")]
-    public BankNameEnum? BankName { get; set; }
-}
-
-public sealed class OpenApiMerchantIdDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public required long MerchantId { get; set; }
-}
-
-[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-public enum MerchantBaasTypeEnum
-{
-    [System.Runtime.Serialization.EnumMember(Value = "trial")] TRIAL,
-    [System.Runtime.Serialization.EnumMember(Value = "trial-extended")] TRIAL_EXTENDED,
-    [System.Runtime.Serialization.EnumMember(Value = "customer")] CUSTOMER,
-    [System.Runtime.Serialization.EnumMember(Value = "cancelled")] CANCELLED,
-    [System.Runtime.Serialization.EnumMember(Value = "unclassified")] UNCLASSIFIED
-}
-
-public sealed class OpenApiCreateMerchantDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("id")]
-    public int? Id { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("code")]
-    public string? Code { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("name")]
-    public required string Name { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("email")]
-    public string? Email { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("phoneNumber")]
-    public required string PhoneNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("website")]
-    public string? Website { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("businessSectorIds")]
-    public IList<double>? BusinessSectorIds { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("provinceId")]
-    public string? ProvinceId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("districtId")]
-    public string? DistrictId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("communeId")]
-    public string? CommuneId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("address")]
-    public string? Address { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("fullAddress")]
-    public string? FullAddress { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("referralCode")]
-    public string? ReferralCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("baasType")]
-    public MerchantBaasTypeEnum? BaasType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("password")]
-    public required string Password { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("appType")]
-    public required AppTypeEnum AppType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("requirePasswordChange")]
-    public bool? RequirePasswordChange { get; set; }
-}
-
-public sealed class EventUrlItemDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("url")]
-    public required string Url { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("type")]
-    public required EventUrlItemType Type { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ids")]
-    public IList<string>? Ids { get; set; }
-}
-
-public sealed class OCBConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("clientId")]
-    public required string ClientId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("clientSecret")]
-    public string? ClientSecret { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("pathCertKey")]
-    public FileUploadDto? PathCertKey { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("pathPrivateKey")]
-    public FileUploadDto? PathPrivateKey { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("userName")]
-    public required string UserName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("password")]
-    public string? Password { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public string? VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefixForDynamicQR")]
-    public string? VaPrefixForDynamicQR { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumbers")]
-    public IList<string>? AccountNumbers { get; set; }
-}
-
-public sealed class MBBConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("identity")]
-    public required string Identity { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("mobile")]
-    public required string Mobile { get; set; }
-}
-
-public sealed class ShinhanConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("vaPrefix")]
-    public required string VaPrefix { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("clientId")]
-    public required string ClientId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("clientSecret")]
-    public string? ClientSecret { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("pathPublicKey")]
-    public FileUploadDto? PathPublicKey { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("pathPrivateKey")]
-    public FileUploadDto? PathPrivateKey { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-}
-
-public sealed class ACBConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("businessAccounts")]
-    public IList<ACBConfigBusinessDto>? BusinessAccounts { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("businessHouseholdAccounts")]
-    public IList<ACBConfigBusinessDto>? BusinessHouseholdAccounts { get; set; }
-}
-
-public sealed class VPBConfigBusinessDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("accountNumber")]
-    public required string AccountNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accountName")]
-    public required string AccountName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public required string MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("terminalId")]
-    public required string TerminalId { get; set; }
-}
-
-public sealed class VPBConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("businessAccounts")]
-    public IList<VPBConfigBusinessDto>? BusinessAccounts { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("businessHouseholdAccounts")]
-    public IList<VPBConfigBusinessDto>? BusinessHouseholdAccounts { get; set; }
-}
-
-public sealed class VCBConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("businessAccounts")]
-    public IList<VCBConfigBusinessDto>? BusinessAccounts { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("businessHouseholdAccounts")]
-    public IList<VCBConfigBusinessDto>? BusinessHouseholdAccounts { get; set; }
-}
-
-public sealed class BankConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("ocbConfigDtos")]
-    public IList<OCBConfigDto>? OcbConfigDtos { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("mbbConfigDtos")]
-    public IList<MBBConfigDto>? MbbConfigDtos { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bidvConfigDtos")]
-    public IList<BIDVConfigDto>? BidvConfigDtos { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("shinhanConfigDtos")]
-    public IList<ShinhanConfigDto>? ShinhanConfigDtos { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vibConfigDtos")]
-    public IList<VIBConfigDto>? VibConfigDtos { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ctgConfigDtos")]
-    public IList<CTGConfigDto>? CtgConfigDtos { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("acbConfigDto")]
-    public ACBConfigDto? AcbConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vpbConfigDto")]
-    public VPBConfigDto? VpbConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("vcbConfigDto")]
-    public VCBConfigDto? VcbConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("baokimConfigDto")]
-    public BaoKimConfigDto? BaokimConfigDto { get; set; }
-}
-
-public sealed class BNPLConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("baokimConfigDto")]
-    public BaoKimConfigDto? BaokimConfigDto { get; set; }
-}
-
-public sealed class OnePayConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public required string MerchantId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("signingKey")]
-    public required string SigningKey { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("verifyKey")]
-    public required string VerifyKey { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("accessCode")]
-    public required string AccessCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("hashCode")]
-    public required string HashCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("callbackUrl")]
-    public required string CallbackUrl { get; set; }
-}
-
-public sealed class DirectDebitConfigDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("onePayConfigDto")]
-    public OnePayConfigDto? OnePayConfigDto { get; set; }
-}
-
-public sealed class MerchantPackageInfo
-{
-    [System.Text.Json.Serialization.JsonPropertyName("packageName")]
-    public string? PackageName { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("expirationDate")]
-    public string? ExpirationDate { get; set; }
-}
-
-public sealed class MerchantDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("id")]
-    public required int Id { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("creationTime")]
-    public string? CreationTime { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("code")]
-    public string? Code { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("name")]
-    public required string Name { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("email")]
-    public string? Email { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("phoneNumber")]
-    public required string PhoneNumber { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("website")]
-    public string? Website { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("businessSectorIds")]
-    public IList<double>? BusinessSectorIds { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("provinceId")]
-    public string? ProvinceId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("districtId")]
-    public string? DistrictId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("communeId")]
-    public string? CommuneId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("address")]
-    public string? Address { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("fullAddress")]
-    public string? FullAddress { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("clientId")]
-    public string? ClientId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("secretToken")]
-    public string? SecretToken { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("eventUrl")]
-    public string? EventUrl { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("eventUrls")]
-    public IList<EventUrlItemDto>? EventUrls { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isLockEvent")]
-    public bool? IsLockEvent { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bankConfigDto")]
-    public BankConfigDto? BankConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("bnplConfigDto")]
-    public BNPLConfigDto? BnplConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("directDebitConfigDto")]
-    public DirectDebitConfigDto? DirectDebitConfigDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("sendNotifyPlatformDto")]
-    public SendNotifyPlatformDto? SendNotifyPlatformDto { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isOrganizationUnit")]
-    public bool? IsOrganizationUnit { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("referralCode")]
-    public string? ReferralCode { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("userReferralAncestorIds")]
-    public string? UserReferralAncestorIds { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("userReferralLevel")]
-    public double? UserReferralLevel { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("deviceDistributorAncestorMap")]
-    public string? DeviceDistributorAncestorMap { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("isMasterMerchant")]
-    public bool? IsMasterMerchant { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("baasType")]
-    public MerchantBaasTypeEnum? BaasType { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("merchantPackages")]
-    public IList<MerchantPackageInfo>? MerchantPackages { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("masterMerchantNames")]
-    public string? MasterMerchantNames { get; set; }
-}
-
-public sealed class OpenApiGetPagingMerchantsDto
-{
-    [System.Text.Json.Serialization.JsonPropertyName("filter")]
-    public string? Filter { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("sorting")]
-    public string? Sorting { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
-    public required int SkipCount { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
-    public required int MaxResultCount { get; set; }
-}
-
 [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
 public enum EInvoiceProviderEnum
 {
@@ -2325,6 +2302,13 @@ public enum EInvoiceProviderEnum
     [System.Runtime.Serialization.EnumMember(Value = "s-invoice")] S_INVOICE,
     [System.Runtime.Serialization.EnumMember(Value = "misa")] MISA,
     [System.Runtime.Serialization.EnumMember(Value = "bkav")] BKAV
+}
+
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum EInvoiceServiceEnum
+{
+    [System.Runtime.Serialization.EnumMember(Value = "output-invoice")] OUTPUT_INVOICE,
+    [System.Runtime.Serialization.EnumMember(Value = "input-invoice")] INPUT_INVOICE
 }
 
 public sealed class GetPagingEInvoiceAccountOutputDto
@@ -2350,7 +2334,11 @@ public sealed class GetPagingEInvoiceAccountOutputDto
     [System.Text.Json.Serialization.JsonPropertyName("isActive")]
     public bool? IsActive { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("services")]
-    public IList<string>? Services { get; set; }
+    public IList<EInvoiceServiceEnum>? Services { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("merchantName")]
+    public string? MerchantName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("masterMerchantName")]
+    public string? MasterMerchantName { get; set; }
 }
 
 public sealed class GetPagingEInvoiceAccountInputDto
@@ -2360,9 +2348,9 @@ public sealed class GetPagingEInvoiceAccountInputDto
     [System.Text.Json.Serialization.JsonPropertyName("sorting")]
     public string? Sorting { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("skipCount")]
-    public required int SkipCount { get; set; }
+    public int? SkipCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("maxResultCount")]
-    public required int MaxResultCount { get; set; }
+    public int? MaxResultCount { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("provider")]
     public EInvoiceProviderEnum? Provider { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("isDefault")]
@@ -2371,12 +2359,14 @@ public sealed class GetPagingEInvoiceAccountInputDto
     public bool? IsActive { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("masterMerchantId")]
+    public int? MasterMerchantId { get; set; }
 }
 
 public sealed class CreateOrUpdateEInvoiceAccountDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("masterMerchantId")]
-    public required double MasterMerchantId { get; set; }
+    public double? MasterMerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("provider")]
     public required EInvoiceProviderEnum Provider { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("taxCode")]
@@ -2639,48 +2629,200 @@ public sealed class SyncIncomeInvoiceRequestDto
     public string? ToDate { get; set; }
 }
 
+public sealed class IncomeInvoiceListItemDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    public double? Id { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceCode")]
+    public string? InvoiceCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("fileHistoryId")]
+    public string? FileHistoryId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceNo")]
+    public string? InvoiceNo { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoicePattern")]
+    public string? InvoicePattern { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceSeries")]
+    public string? InvoiceSeries { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sellerName")]
+    public string? SellerName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sellerTaxCode")]
+    public string? SellerTaxCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("totalBeforeTax")]
+    public double? TotalBeforeTax { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxAmount")]
+    public double? TaxAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("totalAfterTax")]
+    public double? TotalAfterTax { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceDate")]
+    public string? InvoiceDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("receivedDate")]
+    public string? ReceivedDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceStatus")]
+    public double? InvoiceStatus { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("approvalStatus")]
+    public double? ApprovalStatus { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("tctStatus")]
+    public double? TctStatus { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceType")]
+    public double? InvoiceType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceProperty")]
+    public double? InvoiceProperty { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("importMethod")]
+    public double? ImportMethod { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("orderNo")]
+    public string? OrderNo { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("note")]
+    public object Note { get; set; }
+}
+
+public sealed class IncomeInvoiceListOutputDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("items")]
+    public required IList<IncomeInvoiceListItemDto> Items { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("totalCount")]
+    public required double TotalCount { get; set; }
+}
+
 public sealed class GetIncomeInvoicesListRequestDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountId")]
     public int? AccountId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("fromDate")]
-    public string? FromDate { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("toDate")]
-    public string? ToDate { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("benBan")]
-    public string? BenBan { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("benMua")]
-    public string? BenMua { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sellerTaxCode")]
+    public string? SellerTaxCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("buyerTaxCode")]
+    public string? BuyerTaxCode { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("current")]
     public double? Current { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ngayDuyetBd")]
-    public string? NgayDuyetBd { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ngayDuyetKt")]
-    public string? NgayDuyetKt { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ngayLapBd")]
-    public string? NgayLapBd { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ngayLapKt")]
-    public string? NgayLapKt { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ngayNhanBd")]
-    public string? NgayNhanBd { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("ngayNhanKt")]
-    public string? NgayNhanKt { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("nhanDan")]
-    public string? NhanDan { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("approvedFromDate")]
+    public string? ApprovedFromDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("approvedToDate")]
+    public string? ApprovedToDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceFromDate")]
+    public string? InvoiceFromDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceToDate")]
+    public string? InvoiceToDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("receivedFromDate")]
+    public string? ReceivedFromDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("receivedToDate")]
+    public string? ReceivedToDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("label")]
+    public string? Label { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("page")]
     public double? Page { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("pageSize")]
     public double? PageSize { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("size")]
     public double? Size { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("soHoaDon")]
-    public string? SoHoaDon { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("tinhChatHoaDon")]
-    public double? TinhChatHoaDon { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("trangThaiPheDuyet")]
-    public double? TrangThaiPheDuyet { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceNo")]
+    public string? InvoiceNo { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceProperty")]
+    public double? InvoiceProperty { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("approvalStatus")]
+    public double? ApprovalStatus { get; set; }
+}
+
+public sealed class IncomeInvoiceItemDetailDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    public double? Id { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("lineNumber")]
+    public double? LineNumber { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("itemName")]
+    public string? ItemName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("unitName")]
+    public string? UnitName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("quantity")]
+    public double? Quantity { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("unitPrice")]
+    public double? UnitPrice { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("totalBeforeTax")]
+    public double? TotalBeforeTax { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxRate")]
+    public string? TaxRate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxAmount")]
+    public double? TaxAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("itemType")]
+    public double? ItemType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("isPromotion")]
+    public bool? IsPromotion { get; set; }
+}
+
+public sealed class IncomeInvoiceTaxRateSummaryDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    public double? Id { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxRate")]
+    public string? TaxRate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxAmount")]
+    public double? TaxAmount { get; set; }
+}
+
+public sealed class IncomeInvoiceDetailOutputDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceCode")]
+    public string? InvoiceCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("fileHistoryId")]
+    public string? FileHistoryId { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceName")]
+    public string? InvoiceName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoicePattern")]
+    public string? InvoicePattern { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceSeries")]
+    public string? InvoiceSeries { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceNo")]
+    public string? InvoiceNo { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceDate")]
+    public string? InvoiceDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("approvedDate")]
+    public string? ApprovedDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("receivedDate")]
+    public string? ReceivedDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("paymentDate")]
+    public string? PaymentDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("signedDate")]
+    public string? SignedDate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("currency")]
+    public string? Currency { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("exchangeRate")]
+    public double? ExchangeRate { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("paymentMethod")]
+    public string? PaymentMethod { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sellerName")]
+    public string? SellerName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sellerTaxCode")]
+    public string? SellerTaxCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("sellerAddress")]
+    public string? SellerAddress { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("buyerName")]
+    public string? BuyerName { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("buyerTaxCode")]
+    public string? BuyerTaxCode { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("buyerAddress")]
+    public string? BuyerAddress { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("totalBeforeTax")]
+    public double? TotalBeforeTax { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxAmount")]
+    public double? TaxAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("discountAmount")]
+    public double? DiscountAmount { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("totalAfterTax")]
+    public double? TotalAfterTax { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("amountInWords")]
+    public string? AmountInWords { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceStatus")]
+    public double? InvoiceStatus { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("approvalStatus")]
+    public double? ApprovalStatus { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceType")]
+    public double? InvoiceType { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("note")]
+    public string? Note { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("items")]
+    public required IList<IncomeInvoiceItemDetailDto> Items { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("taxRateSummaries")]
+    public required IList<IncomeInvoiceTaxRateSummaryDto> TaxRateSummaries { get; set; }
 }
 
 public sealed class GetIncomeInvoiceDetailRequestDto
@@ -2689,8 +2831,14 @@ public sealed class GetIncomeInvoiceDetailRequestDto
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountId")]
     public int? AccountId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("maHoaDon")]
-    public required string MaHoaDon { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceCode")]
+    public required string InvoiceCode { get; set; }
+}
+
+public sealed class IncomeInvoicePreviewBase64OutputDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("fileBase64")]
+    public string? FileBase64 { get; set; }
 }
 
 public sealed class GetIncomeInvoicePreviewBase64RequestDto
@@ -2699,14 +2847,14 @@ public sealed class GetIncomeInvoicePreviewBase64RequestDto
     public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("accountId")]
     public int? AccountId { get; set; }
-    [System.Text.Json.Serialization.JsonPropertyName("maHoaDon")]
-    public required string MaHoaDon { get; set; }
+    [System.Text.Json.Serialization.JsonPropertyName("invoiceCode")]
+    public required string InvoiceCode { get; set; }
 }
 
 public sealed class OpenApiCreatePaymentLinkInputDto
 {
     [System.Text.Json.Serialization.JsonPropertyName("merchantId")]
-    public required int MerchantId { get; set; }
+    public int? MerchantId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("orderId")]
     public required string OrderId { get; set; }
     [System.Text.Json.Serialization.JsonPropertyName("requestId")]
